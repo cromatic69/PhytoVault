@@ -9,6 +9,8 @@ def get_db():
 
         host=Config.MYSQL_HOST,
 
+        port=Config.MYSQL_PORT,
+
         user=Config.MYSQL_USER,
 
         password=Config.MYSQL_PASSWORD,
