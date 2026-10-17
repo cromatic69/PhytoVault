@@ -1,0 +1,223 @@
+        <!-- ================================
+             Basic Information
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>📋 Basic Information</h2>
+            <p class="section-hint">The two required fields. These become the page title and subtitle everywhere the plant is shown.</p>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="common_name">Common Name <span class="required">*</span></label>
+                    <input type="text" id="common_name" name="common_name" value="{{ plant.common_name }}" required>
+                    <div class="field-hint"><span class="where">Appears:</span> Main heading on the profile page, database table, and search results.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="scientific_name">Scientific Name <span class="required">*</span></label>
+                    <input type="text" id="scientific_name" name="scientific_name" value="{{ plant.scientific_name }}" required>
+                    <div class="field-hint"><span class="where">Appears:</span> Italic subtitle under the name, and used to build the "More Information" external links (Tropicos, GBIF, IPNI, etc.).</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================
+             Classification
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>🧬 Classification</h2>
+            <p class="section-hint">Botanical taxonomy. All shown together in the taxonomy list on the profile page, and used as search filters.</p>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="family">Family</label>
+                    <input type="text" id="family" name="family" value="{{ plant.family or '' }}">
+                    <div class="field-hint"><span class="where">Appears:</span> Taxonomy list, and "Family" search filter.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="genus">Genus</label>
+                    <input type="text" id="genus" name="genus" value="{{ plant.genus or '' }}">
+                    <div class="field-hint"><span class="where">Appears:</span> Taxonomy list on the profile page.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="species">Species</label>
+                    <input type="text" id="species" name="species" value="{{ plant.species or '' }}">
+                    <div class="field-hint"><span class="where">Appears:</span> Taxonomy list on the profile page.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="category">Category / Type</label>
+                    <select id="category" name="category">
+                        <option value="" {{ 'selected' if not plant.category }}>— Select a type —</option>
+                        {% for option in ["Tree", "Shrub", "Herb", "Climber", "Succulent", "Medicinal Plant", "Other"] %}
+                        <option value="{{ option }}" {{ 'selected' if plant.category == option }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="field-hint"><span class="where">Appears:</span> "Type" row in the taxonomy list, and the "Plant Type" search filter.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================
+             Geography & Habitat
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>🌍 Geography & Habitat</h2>
+            <p class="section-hint">Where the plant naturally grows.</p>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="origin">Origin</label>
+                    <input type="text" id="origin" name="origin" value="{{ plant.origin or '' }}">
+                    <div class="field-hint"><span class="where">Appears:</span> "Origin" row in the taxonomy list.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="distribution">Distribution</label>
+                    <input type="text" id="distribution" name="distribution" value="{{ plant.distribution or '' }}" placeholder="e.g. India, Southeast Asia, tropical Africa">
+                    <div class="field-hint"><span class="where">Appears:</span> "Distribution" row in the taxonomy list.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="habitat">Habitat</label>
+                    <input type="text" id="habitat" name="habitat" value="{{ plant.habitat or '' }}">
+                    <div class="field-hint"><span class="where">Appears:</span> "Habitat" field in the Overview section of the profile page.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================
+             Medicinal Uses, Plant Parts & Phytochemicals
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>💊 Medicinal Uses, Plant Parts & Phytochemicals</h2>
+            <p class="section-hint">These are saved to their own tables and linked to the plant.</p>
+
+            <div class="form-grid">
+
+                <div class="form-field full-width">
+                    <label for="medicinal_uses">Medicinal Uses</label>
+                    <textarea id="medicinal_uses" name="medicinal_uses" rows="3" placeholder="Separate multiple uses with commas, e.g. Fever, Skin infections, Diabetes">{{ medicinal_uses_text or '' }}</textarea>
+                    <div class="field-hint"><span class="where">Appears:</span> "Medicinal Uses" section of the profile page.</div>
+                </div>
+
+                <div class="form-field full-width">
+                    <label for="plant_parts">Plant Part Used</label>
+                    <textarea id="plant_parts" name="plant_parts" rows="4" placeholder="Describe which parts are used and how. Put each part on a new line, e.g.&#10;Leaf: crushed into a paste for wounds&#10;Bark: boiled as a decoction for fever">{{ plant_parts_text or '' }}</textarea>
+                    <div class="field-hint"><span class="where">Appears:</span> Plant parts used, on the profile page. One part per line; text after a colon is its description.</div>
+                </div>
+
+                <div class="form-field full-width">
+                    <label for="phytochemicals">Phytochemicals</label>
+                    <textarea id="phytochemicals" name="phytochemicals" rows="3" placeholder="Separate multiple compounds with commas, e.g. Azadirachtin, Nimbin, Quercetin">{{ phytochemicals_text or '' }}</textarea>
+                    <div class="field-hint"><span class="where">Appears:</span> "Associated Phytochemicals" section and the plant–phytochemical network graph.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================
+             Description & Traditional Uses
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>📝 Description & Traditional Uses</h2>
+            <p class="section-hint">Free-text content shown in the Overview section.</p>
+
+            <div class="form-grid">
+
+                <div class="form-field full-width">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="5">{{ plant.description or '' }}</textarea>
+                    <div class="field-hint"><span class="where">Appears:</span> Main paragraph at the top of the Overview section on the profile page.</div>
+                </div>
+
+                <div class="form-field full-width">
+                    <label for="traditional_uses">Traditional Uses</label>
+                    <textarea id="traditional_uses" name="traditional_uses" rows="5">{{ plant.traditional_uses or '' }}</textarea>
+                    <div class="field-hint"><span class="where">Appears:</span> Highlighted "Traditional Uses" box inside the Overview section.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================
+             Conservation & Safety
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>⚠️ Conservation & Safety</h2>
+            <p class="section-hint">Status and any known risks.</p>
+
+            <div class="form-grid">
+
+                <div class="form-field">
+                    <label for="conservation_status">Conservation Status</label>
+                    <select id="conservation_status" name="conservation_status">
+                        <option value="" {{ 'selected' if not plant.conservation_status }}>— Not Evaluated —</option>
+                        {% for option in ["Least Concern", "Near Threatened", "Vulnerable", "Endangered", "Critically Endangered", "Extinct in the Wild", "Data Deficient"] %}
+                        <option value="{{ option }}" {{ 'selected' if plant.conservation_status == option }}>{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="field-hint"><span class="where">Appears:</span> "IUCN Red List Category" row in the taxonomy list.</div>
+                </div>
+
+                <div class="form-field">
+                    <label for="toxicity">Toxicity</label>
+                    <input type="text" id="toxicity" name="toxicity" value="{{ plant.toxicity or '' }}">
+                    <div class="field-hint"><span class="where">Appears:</span> "Toxicity" field in the Overview section.</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================================
+             Plant Image
+        ================================= -->
+
+        <div class="form-section">
+
+            <h2>🖼️ Plant Image</h2>
+            <p class="section-hint">{% if editing %}Leave the file field empty to keep the current photo.{% else %}Optional — a default placeholder image is used if none is provided.{% endif %}</p>
+
+            <div class="image-upload-box">
+
+                <img
+                    id="imagePreview"
+                    class="image-preview"
+                    src="{{ url_for('static', filename=plant.image_path) if plant.image_path else url_for('static', filename='images/plants/default.jpg') }}"
+                    alt="Image preview">
+
+                <div class="image-upload-controls">
+                    <input type="file" id="imageInput" name="image" accept="image/*">
+                    {% if editing %}<input type="hidden" name="old_image" value="{{ plant.image_path or '' }}">{% endif %}
+                    <div class="field-hint"><span class="where">Appears:</span> Profile page thumbnail, search result cards, and the info panel photo.</div>
+                </div>
+
+            </div>
+
+        </div>
+

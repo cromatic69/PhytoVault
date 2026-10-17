@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhytoVault | Register</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
+
+</head>
+
+<body>
+
+    <div class="auth-shell">
+
+        <div class="auth-visual">
+
+            <div class="auth-blobs" aria-hidden="true">
+                <span class="blob blob-1"></span>
+                <span class="blob blob-2"></span>
+            </div>
+
+            <a href="{{ url_for('home') }}" class="auth-logo">🌿 PhytoVault</a>
+
+            <h2 class="font-display">Join the botanical research community</h2>
+
+            <ul class="auth-feature-list">
+                <li>✅ Free access to the full database</li>
+                <li>✅ Save and track plants you're researching</li>
+                <li>✅ Built for students, researchers &amp; faculty</li>
+            </ul>
+
+            <blockquote class="auth-quote">
+                "From traditional folklore to phytochemical structures — all in one account."
+            </blockquote>
+
+        </div>
+
+        <div class="auth-form-panel">
+
+            <div class="login-card">
+
+                <a href="{{ url_for('home') }}" class="auth-mobile-logo">🌿 PhytoVault</a>
+
+                <h2>Create an Account</h2>
+
+                <p>
+                    Register to access the Plants &amp;
+                    Phytochemicals Database
+                </p>
+
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                <div class="flash-message">{{ messages[0] }}</div>
+                {% endif %}
+                {% endwith %}
+
+                <form id="registerForm">
+
+                    <div class="form-row">
+
+                        <div class="input-box">
+                            <label for="fullname">Full Name</label>
+                            <input type="text" id="fullname" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="input-box">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Enter your email" required>
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="input-box">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" placeholder="Choose a username" required>
+                        </div>
+
+                        <div class="input-box">
+                            <label for="institution">Institution</label>
+                            <input type="text" id="institution" placeholder="College / University / Organization">
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="input-box">
+
+                            <label for="password">Password</label>
+
+                            <div class="password-box">
+                                <input type="password" id="password" placeholder="Create password" required>
+                                <button type="button" id="togglePassword">Show</button>
+                            </div>
+
+                        </div>
+
+                        <div class="input-box">
+
+                            <label for="confirmPassword">Confirm Password</label>
+
+                            <div class="password-box">
+                                <input type="password" id="confirmPassword" placeholder="Confirm password" required>
+                                <button type="button" id="toggleConfirmPassword">Show</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-row">
+
+                        <div class="input-box">
+
+                            <label for="country">Country</label>
+
+                            <select id="country">
+                                <option value="">Select Country</option>
+                                <option>India</option>
+                                <option>United States</option>
+                                <option>United Kingdom</option>
+                                <option>Canada</option>
+                                <option>Australia</option>
+                                <option>Germany</option>
+                                <option>Japan</option>
+                                <option>Other</option>
+                            </select>
+
+                        </div>
+
+                        <div class="input-box">
+
+                            <label for="role">Role</label>
+
+                            <select id="role">
+                                <option value="">Select Role</option>
+                                <option>Student</option>
+                                <option>Researcher</option>
+                                <option>Faculty</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="terms">
+
+                        <label>
+                            <input type="checkbox" id="terms" required>
+                            I agree to the Terms and Conditions
+                        </label>
+
+                    </div>
+
+                    <button type="submit" class="register-btn">Create Account</button>
+
+                </form>
+
+                <p class="login-link">
+                    Already have an account?
+                    <a href="{{ url_for('login') }}">Login</a>
+                </p>
+
+                <a href="{{ url_for('home') }}" class="back-home">← Back to Home</a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+
+</body>
+
+</html>

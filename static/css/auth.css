@@ -1,0 +1,608 @@
+/* ==========================================
+   PHYTOVAULT — AUTH PAGES
+   Split-screen layout shared by login,
+   register, forgot-password, reset-password.
+========================================== */
+
+html,body{
+    height:100%;
+}
+
+body{
+    background:var(--cream-50);
+}
+
+.auth-shell{
+
+    display:flex;
+    min-height:100vh;
+
+}
+
+/* ==========================================
+   Left visual panel
+========================================== */
+
+.auth-visual{
+
+    flex:0 0 44%;
+
+    position:relative;
+    overflow:hidden;
+
+    background:linear-gradient(160deg,var(--forest-900),var(--forest-700));
+    color:white;
+
+    padding:60px 55px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+}
+
+.auth-blobs{
+
+    position:absolute;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+
+}
+
+.auth-blobs .blob{
+
+    position:absolute;
+    border-radius:50%;
+    filter:blur(70px);
+    opacity:.3;
+
+}
+
+.auth-blobs .blob-1{
+
+    width:320px;
+    height:320px;
+    top:-100px;
+    right:-80px;
+    background:var(--mint-400);
+    animation:authBlobFloat 15s ease-in-out infinite;
+
+}
+
+.auth-blobs .blob-2{
+
+    width:260px;
+    height:260px;
+    bottom:-80px;
+    left:-60px;
+    background:var(--gold-400);
+    opacity:.2;
+    animation:authBlobFloat 19s ease-in-out infinite reverse;
+
+}
+
+@keyframes authBlobFloat{
+    0%,100%{ transform:translate(0,0); }
+    50%{ transform:translate(20px,-20px); }
+}
+
+.auth-logo{
+
+    position:relative;
+    z-index:2;
+
+    font-family:var(--font-display);
+    font-size:26px;
+    font-weight:600;
+    color:white;
+    text-decoration:none;
+
+    margin-bottom:70px;
+    display:inline-block;
+    width:max-content;
+
+}
+
+.auth-visual h2{
+
+    position:relative;
+    z-index:2;
+
+    font-size:34px;
+    line-height:1.3;
+    font-weight:600;
+
+    margin-bottom:34px;
+    max-width:420px;
+
+}
+
+.auth-feature-list{
+
+    position:relative;
+    z-index:2;
+
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+
+    margin-bottom:60px;
+
+}
+
+.auth-feature-list li{
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    font-size:14.5px;
+    opacity:.92;
+
+}
+
+.auth-quote{
+
+    position:relative;
+    z-index:2;
+
+    font-style:italic;
+    font-size:15px;
+    line-height:1.7;
+    opacity:.8;
+
+    border-left:3px solid var(--mint-400);
+    padding-left:18px;
+
+    max-width:400px;
+
+}
+
+/* ==========================================
+   Right form panel
+========================================== */
+
+.auth-form-panel{
+
+    flex:1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:60px 24px;
+
+    background:var(--cream-50);
+
+}
+
+.auth-mobile-logo{
+
+    display:none;
+
+    font-family:var(--font-display);
+    font-size:22px;
+    font-weight:600;
+    color:var(--forest-800);
+    text-decoration:none;
+
+    margin-bottom:26px;
+
+}
+
+.login-card{
+
+    width:100%;
+    max-width:440px;
+
+}
+
+.login-card h2{
+
+    font-family:var(--font-display);
+    font-size:32px;
+    font-weight:600;
+    color:var(--ink-900);
+
+    margin-bottom:10px;
+
+}
+
+.login-card > p{
+
+    color:var(--ink-600);
+    font-size:14.5px;
+    line-height:1.65;
+
+    margin-bottom:30px;
+
+}
+
+/* Shake animation used by login.js on failed login */
+
+@keyframes shake{
+    10%,90%{ transform:translateX(-2px); }
+    20%,80%{ transform:translateX(4px); }
+    30%,50%,70%{ transform:translateX(-8px); }
+    40%,60%{ transform:translateX(8px); }
+}
+
+.login-card.shake{
+    animation:shake .5s;
+}
+
+/* ==========================================
+   Messages
+========================================== */
+
+.flash-message{
+
+    background:var(--mint-100);
+    color:var(--forest-800);
+
+    padding:13px 16px;
+
+    border-radius:var(--radius-sm);
+
+    margin-bottom:22px;
+
+    font-size:13.5px;
+    font-weight:500;
+
+}
+
+.error-message{
+
+    background:#fdecea;
+    color:#c62828;
+
+    padding:13px 16px;
+
+    border-radius:var(--radius-sm);
+
+    margin-bottom:22px;
+
+    font-size:13.5px;
+    font-weight:500;
+
+}
+
+/* ==========================================
+   Fields
+========================================== */
+
+.form-row{
+
+    display:flex;
+    gap:20px;
+
+}
+
+.form-row .input-box{
+
+    flex:1;
+
+}
+
+.input-box{
+
+    margin-bottom:20px;
+
+    display:flex;
+    flex-direction:column;
+
+}
+
+.input-box label{
+
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-900);
+
+    margin-bottom:8px;
+
+}
+
+.input-box input,
+.input-box select{
+
+    padding:14px 16px;
+
+    border:1.5px solid var(--cream-200);
+    border-radius:var(--radius-sm);
+
+    font-size:14.5px;
+    font-family:var(--font-body);
+
+    outline:none;
+    transition:.25s;
+
+    background:white;
+    color:var(--ink-900);
+
+}
+
+.input-box input:focus,
+.input-box select:focus{
+
+    border-color:var(--forest-700);
+    box-shadow:0 0 0 4px rgba(45,106,79,.1);
+
+}
+
+.password-box{
+
+    position:relative;
+
+    display:flex;
+
+}
+
+.password-box input{
+
+    flex:1;
+    padding-right:52px;
+
+}
+
+.password-box button{
+
+    position:absolute;
+    right:6px;
+    top:50%;
+    transform:translateY(-50%);
+
+    background:none;
+    border:none;
+
+    cursor:pointer;
+
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink-400);
+
+    padding:10px 12px;
+
+}
+
+.password-box button:hover{
+
+    color:var(--forest-700);
+
+}
+
+.options{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:26px;
+
+    font-size:13px;
+    color:var(--ink-600);
+
+}
+
+.options label{
+
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+}
+
+.options a{
+
+    color:var(--forest-700);
+    text-decoration:none;
+    font-weight:600;
+
+}
+
+.options a:hover{
+
+    text-decoration:underline;
+
+}
+
+.terms{
+
+    display:flex;
+    align-items:flex-start;
+    gap:9px;
+
+    margin-bottom:26px;
+
+    font-size:13px;
+    color:var(--ink-600);
+    line-height:1.5;
+
+}
+
+.terms input{
+
+    margin-top:3px;
+
+}
+
+/* ==========================================
+   Buttons
+========================================== */
+
+.login-btn,
+.register-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+    border-radius:100px;
+
+    background:var(--forest-800);
+    color:white;
+
+    font-weight:600;
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.login-btn:hover,
+.register-btn:hover{
+
+    background:var(--forest-900);
+    transform:translateY(-2px);
+    box-shadow:0 14px 28px rgba(27,67,50,.25);
+
+}
+
+.login-btn:disabled,
+.register-btn:disabled{
+
+    opacity:.6;
+    cursor:not-allowed;
+    transform:none;
+    box-shadow:none;
+
+}
+
+.divider{
+
+    display:flex;
+    align-items:center;
+    gap:14px;
+
+    margin:26px 0;
+
+    color:var(--ink-400);
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.5px;
+
+}
+
+.divider::before,
+.divider::after{
+
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--cream-200);
+
+}
+
+.google-btn{
+
+    width:100%;
+
+    padding:14px;
+
+    border-radius:100px;
+    border:1.5px solid var(--cream-200);
+
+    background:white;
+    color:var(--ink-900);
+
+    font-weight:600;
+    font-size:14px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.google-btn:hover{
+
+    border-color:var(--forest-700);
+    background:var(--cream-100);
+
+}
+
+.register-text,
+.login-link{
+
+    text-align:center;
+
+    margin-top:26px;
+
+    font-size:13.5px;
+    color:var(--ink-600);
+
+}
+
+.register-text a,
+.login-link a{
+
+    color:var(--forest-700);
+    font-weight:600;
+    text-decoration:none;
+
+}
+
+.register-text a:hover,
+.login-link a:hover{
+
+    text-decoration:underline;
+
+}
+
+.back-home{
+
+    display:block;
+
+    text-align:center;
+
+    margin-top:18px;
+
+    font-size:13px;
+    color:var(--ink-400);
+    text-decoration:none;
+
+}
+
+.back-home:hover{
+
+    color:var(--forest-700);
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:900px){
+
+    .auth-visual{
+
+        display:none;
+
+    }
+
+    .auth-mobile-logo{
+
+        display:inline-block;
+
+    }
+
+    .auth-form-panel{
+
+        padding:50px 20px;
+
+    }
+
+    .form-row{
+
+        flex-direction:column;
+        gap:0;
+
+    }
+
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Plant | PhytoVault</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/database.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plant_profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plant_form.css') }}">
+
+</head>
+
+<body>
+
+<div class="form-page">
+
+    <a class="back-link" href="{{ url_for('admin.dashboard') }}">← Back to Dashboard</a>
+
+    <div class="form-header">
+        <h1>Add a New Plant</h1>
+        <p>Fill in the details below. Each field shows where it appears on the plant's public profile page.</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        {% set plant = {} %}
+        {% include "_plant_form_fields.html" %}
+
+        <div class="form-actions">
+            <a class="btn-secondary" href="{{ url_for('admin.dashboard') }}">Cancel</a>
+            <button class="btn-primary" type="submit">Add Plant</button>
+        </div>
+
+    </form>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/plant_form.js') }}"></script>
+
+</body>
+
+</html>

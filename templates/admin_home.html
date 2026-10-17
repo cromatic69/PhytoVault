@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Panel | PhytoVault</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+
+    <style>
+
+        body{
+
+            background:linear-gradient(160deg,var(--forest-900),var(--forest-700));
+
+            min-height:100vh;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            padding:20px;
+
+        }
+
+        .card{
+
+            background:white;
+
+            padding:56px 50px;
+
+            border-radius:var(--radius-xl);
+
+            text-align:center;
+
+            box-shadow:var(--shadow-lg);
+
+            max-width:460px;
+
+        }
+
+        .card .badge-icon{
+
+            font-size:42px;
+            margin-bottom:18px;
+
+        }
+
+        .card h1{
+
+            color:var(--forest-900);
+            font-size:26px;
+            margin-bottom:12px;
+
+        }
+
+        .card p{
+
+            color:var(--ink-600);
+            margin-bottom:34px;
+            font-size:14.5px;
+
+        }
+
+        .buttons{
+
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+
+        }
+
+        .buttons a{
+
+            text-decoration:none;
+
+            padding:15px 25px;
+
+            border-radius:100px;
+
+            background:var(--forest-800);
+            color:white;
+
+            font-weight:600;
+            font-size:14.5px;
+
+            transition:.3s;
+
+        }
+
+        .buttons a:hover{
+
+            background:var(--forest-900);
+            transform:translateY(-2px);
+
+        }
+
+        .buttons a.secondary{
+
+            background:var(--cream-100);
+            color:var(--ink-900);
+
+        }
+
+        .buttons a.secondary:hover{
+
+            background:var(--cream-200);
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="badge-icon">🛡️</div>
+
+    <h1>Welcome, Admin</h1>
+    <p>Choose where you want to go.</p>
+
+    <div class="buttons">
+
+        <a href="/admin">🛠️ Admin Dashboard</a>
+        <a href="/admin/manage-admins">👥 Manage Admins</a>
+        <a href="/" class="secondary">🏠 Homepage</a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

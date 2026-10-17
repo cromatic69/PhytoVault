@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ plant.common_name }} | PhytoVault</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/database.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plant_profile.css') }}">
+
+</head>
+
+<body>
+
+<!-- =======================================
+     Sidebar
+======================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <h2>🌿 PhytoVault</h2>
+        <p>Plant Database</p>
+    </div>
+
+    <ul>
+        <li><a href="{{ url_for('home') }}">🏠 Home</a></li>
+        <li class="active"><a href="{{ url_for('plants.database') }}">🗂️ Database</a></li>
+        <li><a href="#">ℹ️ About</a></li>
+        <li><a href="#">✉️ Contact</a></li>
+        <li><a href="/logout">🚪 Logout</a></li>
+    </ul>
+
+</aside>
+
+<div class="main-content">
+
+    <a class="back-link" href="{{ url_for('plants.database') }}">
+        ← Back to Database
+    </a>
+
+    <!-- =======================================
+         Info Panel + Network Graph
+    ======================================== -->
+
+    <section class="profile-top-grid">
+
+        <div class="info-panel">
+
+            {% if plant.image_path %}
+            <img
+                src="{{ url_for('static', filename=plant.image_path) }}"
+                alt="{{ plant.common_name }}"
+                style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-bottom:20px;">
+            {% endif %}
+
+            <h1>{{ plant.common_name }}</h1>
+            <h3>{{ plant.scientific_name }}</h3>
+
+            <div class="taxonomy-list">
+
+                <div class="tax-row">
+                    <span class="tax-label">Kingdom:</span>
+                    <span class="tax-value">Plantae</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">Family:</span>
+                    <span class="tax-value">{{ plant.family or "—" }}</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">Genus:</span>
+                    <span class="tax-value">{{ plant.genus or "—" }}</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">Species:</span>
+                    <span class="tax-value">{{ plant.species or "—" }}</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">Type:</span>
+                    <span class="tax-value">{{ plant.category or "—" }}</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">Origin:</span>
+                    <span class="tax-value">{{ plant.origin or "—" }}</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">Distribution:</span>
+                    <span class="tax-value">{{ plant.distribution or "—" }}</span>
+                </div>
+
+                <div class="tax-row">
+                    <span class="tax-label">IUCN Red List Category:</span>
+                    <span class="tax-value">{{ plant.conservation_status or "Not Evaluated" }}</span>
+                </div>
+
+            </div>
+
+            <span class="info-buttons-label">More Information:</span>
+
+            <div class="info-buttons">
+                <a href="https://www.tropicos.org/name/Search?name={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">Tropicos</a>
+                <a href="http://www.worldfloraonline.org/search?query={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">World Flora Online</a>
+                <a href="https://powo.science.kew.org/results?q={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">PoW</a>
+                <a href="https://www.ipni.org/search?q={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">IPNI</a>
+                <a href="https://www.gbif.org/species/search?q={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">GBIF</a>
+                <a href="https://en.wikipedia.org/wiki/Special:Search?search={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">Wikipedia</a>
+            </div>
+
+        </div>
+
+        <div class="network-card">
+
+            <div class="network-graph" id="networkGraph"></div>
+
+            <p class="network-caption">Plant – Phytochemical associations</p>
+
+        </div>
+
+    </section>
+
+    <script type="application/json" id="networkData">
+    {
+        "plantName": {{ plant.common_name | tojson }},
+        "phytochemicals": [
+            {% for compound in plant.phytochemicals %}
+            {"id": {{ compound.phytochemical_id }}, "name": {{ compound.compound_name | tojson }}}{{ "," if not loop.last }}
+            {% endfor %}
+        ]
+    }
+    </script>
+
+    <!-- =======================================
+         Overview
+    ======================================== -->
+
+    <section class="profile-section">
+
+        <h2><span class="icon">📋</span> Overview</h2>
+
+        {% if plant.description %}
+        <p class="description-text" style="margin-bottom:20px;">{{ plant.description }}</p>
+        {% endif %}
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <div class="label">Habitat</div>
+                <div class="value">{{ plant.habitat or "Unknown" }}</div>
+            </div>
+
+            <div class="info-item">
+                <div class="label">Toxicity</div>
+                <div class="value">{{ plant.toxicity or "None Reported" }}</div>
+            </div>
+
+        </div>
+
+        {% if plant.traditional_uses %}
+        <br>
+        <div class="info-item" style="border-left-color:#43A047;">
+            <div class="label">Traditional Uses</div>
+            <div class="value" style="font-weight:400; line-height:1.7;">{{ plant.traditional_uses }}</div>
+        </div>
+        {% endif %}
+
+    </section>
+
+    <!-- =======================================
+         Medicinal Uses
+    ======================================== -->
+
+    <section class="profile-section">
+
+        <h2><span class="icon">💊</span> Medicinal Uses</h2>
+
+        {% if plant.medicinal_uses %}
+
+        <ul class="uses-list">
+
+            {% for use in plant.medicinal_uses %}
+
+            <li>
+                <span class="use-name">{{ use.disease_name }}</span>
+                <span class="evidence-badge evidence-{{ use.evidence_level }}">{{ use.evidence_level }}</span>
+                {% if use.notes %}
+                <span class="use-notes">{{ use.notes }}</span>
+                {% endif %}
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+        {% else %}
+
+        <p class="muted">No medicinal uses have been documented yet.</p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- =======================================
+         Associated Phytochemicals
+    ======================================== -->
+
+    <section class="profile-section">
+
+        <h2><span class="icon">⚗️</span> Associated Phytochemicals</h2>
+
+        {% if plant.phytochemicals %}
+
+        <div class="datatable-controls">
+
+            <div class="entries-control">
+                Show
+                <select id="phytoPageSize">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="all">All</option>
+                </select>
+                entries
+            </div>
+
+            <div class="search-control">
+                Search:
+                <input type="text" id="phytoSearch" placeholder="Search phytochemicals...">
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+            <table id="phytoTable">
+
+                <thead>
+                    <tr>
+                        <th data-sort>Phytochemical ID</th>
+                        <th data-sort>Phytochemical Name</th>
+                        <th data-sort>Molecular Formula</th>
+                        <th data-sort>Plant Part</th>
+                        <th data-sort>Concentration</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for compound in plant.phytochemicals %}
+
+                    <tr data-search="{{ (compound.compound_name ~ ' ' ~ (compound.molecular_formula or '') ~ ' ' ~ (compound.plant_part or '')) | lower }}">
+                        <td>PHY-{{ '%06d' % compound.phytochemical_id }}</td>
+                        <td><a href="{{ url_for('plants.phytochemical_details', phytochemical_id=compound.phytochemical_id) }}">{{ compound.compound_name }}</a></td>
+                        <td>{{ compound.molecular_formula or "-" }}</td>
+                        <td>{{ compound.plant_part or "-" }}</td>
+                        <td>{{ compound.concentration or "-" }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="datatable-footer">
+            <span id="phytoInfo"></span>
+            <div id="phytoPagination" class="pagination-controls"></div>
+        </div>
+
+        {% else %}
+
+        <p class="muted">No phytochemicals have been documented yet.</p>
+
+        {% endif %}
+
+    </section>
+
+    <!-- =======================================
+         Gallery
+    ======================================== -->
+
+    {% if plant.gallery %}
+
+    <section class="profile-section">
+
+        <h2><span class="icon">🖼️</span> Gallery</h2>
+
+        <div class="gallery-grid">
+
+            {% for image in plant.gallery %}
+
+            <img
+                src="{{ url_for('static', filename=image.image_path) }}"
+                alt="{{ image.caption or plant.common_name }}">
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+    {% endif %}
+
+</div>
+
+<footer class="database-footer">
+    <p>&copy; 2026 PhytoVault | Plants & Phytochemicals Database</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/plant_network.js') }}"></script>
+<script src="{{ url_for('static', filename='js/phyto_table.js') }}"></script>
+
+</body>
+
+</html>

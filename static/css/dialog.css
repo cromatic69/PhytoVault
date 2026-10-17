@@ -1,0 +1,236 @@
+/* ==========================================
+   PHYTOVAULT DIALOG SYSTEM
+   Toast notifications + confirm modal
+   (replaces native alert() / confirm())
+========================================== */
+
+#pv-toast-container{
+
+    position:fixed;
+    top:20px;
+    right:20px;
+
+    z-index:9999;
+
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+
+    max-width:360px;
+
+}
+
+.pv-toast{
+
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+
+    background:#ffffff;
+    border-radius:12px;
+
+    padding:16px 18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.15);
+
+    border-left:5px solid var(--forest-800);
+
+    opacity:0;
+    transform:translateX(30px);
+    transition:.3s ease;
+
+    font-family:var(--font-body);
+
+}
+
+.pv-toast.show{
+
+    opacity:1;
+    transform:translateX(0);
+
+}
+
+.pv-toast-success{ border-left-color:var(--forest-800); }
+.pv-toast-error{ border-left-color:#C62828; }
+.pv-toast-info{ border-left-color:#1565C0; }
+
+.pv-toast-icon{
+
+    font-size:20px;
+    line-height:1;
+
+}
+
+.pv-toast-message{
+
+    flex:1;
+
+    font-size:14px;
+    color:#333;
+    line-height:1.5;
+
+}
+
+.pv-toast-close{
+
+    background:none;
+    border:none;
+
+    font-size:18px;
+    color:#999;
+
+    cursor:pointer;
+    line-height:1;
+    padding:0;
+
+}
+
+.pv-toast-close:hover{
+
+    color:#333;
+
+}
+
+/* ==========================================
+   Confirm Modal
+========================================== */
+
+.pv-modal-overlay{
+
+    position:fixed;
+    inset:0;
+
+    background:rgba(0,0,0,0);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    z-index:10000;
+
+    opacity:0;
+    transition:.25s ease;
+
+    pointer-events:none;
+
+}
+
+.pv-modal-overlay.show{
+
+    background:rgba(0,0,0,.45);
+    opacity:1;
+
+    pointer-events:auto;
+
+}
+
+.pv-modal{
+
+    background:#ffffff;
+    border-radius:18px;
+
+    padding:32px;
+
+    max-width:380px;
+    width:90%;
+
+    text-align:center;
+
+    box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+    transform:scale(.9);
+    transition:.25s ease;
+
+    font-family:var(--font-body);
+
+}
+
+.pv-modal-overlay.show .pv-modal{
+
+    transform:scale(1);
+
+}
+
+.pv-modal-icon{
+
+    font-size:40px;
+    margin-bottom:12px;
+
+}
+
+.pv-modal-message{
+
+    font-size:15.5px;
+    color:#333;
+    line-height:1.6;
+
+    margin-bottom:26px;
+
+}
+
+.pv-modal-actions{
+
+    display:flex;
+    gap:12px;
+    justify-content:center;
+
+}
+
+.pv-modal-actions button{
+
+    padding:12px 24px;
+
+    border-radius:10px;
+
+    font-weight:600;
+    font-size:14px;
+
+    cursor:pointer;
+    border:none;
+
+    transition:.2s;
+
+}
+
+.pv-modal-cancel{
+
+    background:var(--cream-100);
+    color:#555;
+
+}
+
+.pv-modal-cancel:hover{
+
+    background:var(--cream-200);
+
+}
+
+.pv-modal-confirm{
+
+    background:var(--forest-800);
+    color:#ffffff;
+
+}
+
+.pv-modal-confirm:hover{
+
+    filter:brightness(0.92);
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:480px){
+
+    #pv-toast-container{
+
+        left:16px;
+        right:16px;
+
+        max-width:none;
+
+    }
+
+}

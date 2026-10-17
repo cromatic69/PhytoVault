@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>500 | PhytoVault</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+
+<style>
+
+body{
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    min-height:100vh;
+
+    background:linear-gradient(160deg,var(--forest-900),var(--forest-700));
+
+    margin:0;
+
+    padding:20px;
+
+}
+
+.error-card{
+
+    text-align:center;
+
+    background:white;
+
+    padding:60px 50px;
+
+    border-radius:var(--radius-xl);
+
+    box-shadow:var(--shadow-lg);
+
+    max-width:420px;
+
+}
+
+.error-card .emoji{
+
+    font-size:48px;
+    margin-bottom:10px;
+
+}
+
+.error-card h1{
+
+    font-family:var(--font-display);
+    font-size:64px;
+    color:var(--forest-900);
+
+    margin-bottom:6px;
+
+}
+
+.error-card h2{
+
+    color:var(--ink-900);
+    font-size:19px;
+    margin-bottom:10px;
+
+}
+
+.error-card p{
+
+    color:var(--ink-600);
+    font-size:14px;
+    margin-bottom:30px;
+
+}
+
+.error-card a{
+
+    text-decoration:none;
+
+    display:inline-block;
+
+    padding:14px 30px;
+
+    background:var(--forest-800);
+    color:white;
+
+    font-weight:600;
+    font-size:14.5px;
+
+    border-radius:100px;
+
+    transition:.3s;
+
+}
+
+.error-card a:hover{
+
+    background:var(--forest-900);
+    transform:translateY(-2px);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="error-card">
+
+    <div class="emoji">🥀</div>
+
+    <h1>500</h1>
+    <h2>Something Went Wrong</h2>
+    <p>Our roots hit a snag. Please try again shortly.</p>
+
+    <a href="/">← Return Home</a>
+
+</div>
+
+</body>
+
+</html>

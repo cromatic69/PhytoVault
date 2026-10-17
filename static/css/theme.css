@@ -1,0 +1,132 @@
+/* ==========================================
+   PHYTOVAULT — GLOBAL DESIGN TOKENS
+   Shared by every page. Include this first,
+   before any page-specific stylesheet.
+========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root{
+
+    /* Core palette — deep forest + warm cream, not the old flat green/white */
+    --forest-950:#0d2818;
+    --forest-900:#123b26;
+    --forest-800:#1b4332;
+    --forest-700:#2d6a4f;
+    --forest-600:#40916c;
+
+    --mint-400:#74c69d;
+    --mint-300:#95d5b2;
+    --mint-100:#d8f3dc;
+
+    --gold-500:#c8935a;
+    --gold-400:#e9c46a;
+
+    --cream-50:#faf8f3;
+    --cream-100:#f2eee2;
+    --cream-200:#e9e2d0;
+
+    --ink-900:#16231b;
+    --ink-600:#526054;
+    --ink-400:#7c8b7e;
+
+    --white:#ffffff;
+
+    /* Shape */
+    --radius-xl:32px;
+    --radius-lg:24px;
+    --radius-md:16px;
+    --radius-sm:10px;
+
+    /* Elevation */
+    --shadow-sm:0 4px 14px rgba(13,40,24,.08);
+    --shadow-md:0 14px 34px rgba(13,40,24,.12);
+    --shadow-lg:0 26px 60px rgba(13,40,24,.20);
+
+    /* Type */
+    --font-display:'Fraunces',serif;
+    --font-body:'Inter',sans-serif;
+
+}
+
+*{
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:var(--font-body);
+    background:var(--cream-50);
+    color:var(--ink-900);
+}
+
+h1,h2,h3,
+.font-display{
+    font-family:var(--font-display);
+}
+
+::selection{
+    background:var(--mint-300);
+    color:var(--forest-950);
+}
+
+::-webkit-scrollbar{
+    width:10px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:var(--forest-700);
+    border-radius:20px;
+}
+
+::-webkit-scrollbar-track{
+    background:var(--cream-100);
+}
+
+/* Shared small components used across multiple redesigned pages */
+
+.eyebrow-tag{
+
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
+    padding:8px 18px;
+
+    border-radius:30px;
+
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+
+}
+
+.gradient-text{
+
+    background:linear-gradient(100deg,var(--mint-300),var(--gold-400),var(--mint-300));
+    background-size:200% auto;
+
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    animation:pv-gradientShift 6s ease-in-out infinite;
+
+}
+
+@keyframes pv-gradientShift{
+    0%,100%{ background-position:0% center; }
+    50%{ background-position:100% center; }
+}
+
+@media(prefers-reduced-motion:reduce){
+
+    .gradient-text{
+        animation:none;
+    }
+
+}

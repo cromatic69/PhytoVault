@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ phytochemical.compound_name }} | PhytoVault</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/database.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plant_profile.css') }}">
+
+</head>
+
+<body>
+
+<!-- =======================================
+     Sidebar
+======================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <h2>🌿 PhytoVault</h2>
+        <p>Plant Database</p>
+    </div>
+
+    <ul>
+        <li><a href="{{ url_for('home') }}">🏠 Home</a></li>
+        <li class="active"><a href="{{ url_for('plants.database') }}">🗂️ Database</a></li>
+        <li><a href="#">ℹ️ About</a></li>
+        <li><a href="#">✉️ Contact</a></li>
+        <li><a href="/logout">🚪 Logout</a></li>
+    </ul>
+
+</aside>
+
+<div class="main-content">
+
+    <a class="back-link" href="{{ url_for('plants.database') }}">
+        ← Back to Database
+    </a>
+
+    <!-- =======================================
+         Hero
+    ======================================== -->
+
+    <section class="profile-hero">
+
+        <div class="structure-image">
+
+            {% if phytochemical.pubchem_cid %}
+
+            <img
+                src="https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid={{ phytochemical.pubchem_cid }}&t=l"
+                alt="{{ phytochemical.compound_name }} chemical structure">
+
+            {% else %}
+
+            <div class="structure-placeholder">⚗️</div>
+
+            {% endif %}
+
+        </div>
+
+        <div class="profile-hero-info">
+
+            <h1>{{ phytochemical.compound_name }}</h1>
+
+            {% if phytochemical.iupac_name %}
+            <h3>{{ phytochemical.iupac_name }}</h3>
+            {% endif %}
+
+            <div class="badge-row">
+
+                {% if phytochemical.molecular_formula %}
+                <span class="badge">{{ phytochemical.molecular_formula }}</span>
+                {% endif %}
+
+                {% if phytochemical.molecular_weight %}
+                <span class="badge badge-outline">{{ phytochemical.molecular_weight }} g/mol</span>
+                {% endif %}
+
+                {% if phytochemical.pubchem_cid %}
+                <span class="badge badge-outline">PubChem CID: {{ phytochemical.pubchem_cid }}</span>
+                {% endif %}
+
+            </div>
+
+            <p>{{ phytochemical.description or "No description available yet." }}</p>
+
+        </div>
+
+    </section>
+
+    <!-- =======================================
+         Properties
+    ======================================== -->
+
+    <section class="profile-section">
+
+        <h2><span class="icon">🔬</span> Properties</h2>
+
+        <table class="properties-table">
+
+            <tr>
+                <td>Molecular Formula</td>
+                <td>{{ phytochemical.molecular_formula or "Not recorded" }}</td>
+            </tr>
+
+            <tr>
+                <td>Molecular Weight</td>
+                <td>{{ phytochemical.molecular_weight and (phytochemical.molecular_weight ~ " g/mol") or "Not recorded" }}</td>
+            </tr>
+
+            <tr>
+                <td>IUPAC Name</td>
+                <td>{{ phytochemical.iupac_name or "Not recorded" }}</td>
+            </tr>
+
+            <tr>
+                <td>SMILES</td>
+                <td>{{ phytochemical.smiles or "Not recorded" }}</td>
+            </tr>
+
+            <tr>
+                <td>PubChem CID</td>
+                <td>
+                    {% if phytochemical.pubchem_cid %}
+                    <a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ phytochemical.pubchem_cid }}" target="_blank" rel="noopener">
+                        {{ phytochemical.pubchem_cid }} ↗
+                    </a>
+                    {% else %}
+                    Not recorded
+                    {% endif %}
+                </td>
+            </tr>
+
+        </table>
+
+    </section>
+
+    <!-- =======================================
+         Biological Activity
+    ======================================== -->
+
+    {% if phytochemical.biological_activity %}
+
+    <section class="profile-section">
+
+        <h2><span class="icon">🧪</span> Biological Activity</h2>
+
+        <p class="description-text">{{ phytochemical.biological_activity }}</p>
+
+    </section>
+
+    {% endif %}
+
+    <!-- =======================================
+         Plants Containing This Phytochemical
+    ======================================== -->
+
+    <section class="profile-section">
+
+        <h2><span class="icon">🌿</span> Plants Containing This Phytochemical</h2>
+
+        {% if plants %}
+
+        <div class="table-wrapper">
+
+            <table id="plantTable">
+
+                <thead>
+                    <tr>
+                        <th>Plant</th>
+                        <th>Scientific Name</th>
+                        <th>Family</th>
+                        <th>Plant Part</th>
+                        <th>Concentration</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for plant in plants %}
+
+                    <tr>
+                        <td>
+                            <img
+                                src="{{ url_for('static', filename=plant.image_path) if plant.image_path else url_for('static', filename='images/plants/default.jpg') }}"
+                                alt="{{ plant.common_name }}"
+                                style="width:40px;height:40px;object-fit:cover;border-radius:8px;vertical-align:middle;margin-right:10px;">
+                            {{ plant.common_name }}
+                        </td>
+                        <td><i>{{ plant.scientific_name }}</i></td>
+                        <td>{{ plant.family }}</td>
+                        <td>{{ plant.plant_part or "-" }}</td>
+                        <td>{{ plant.concentration or "-" }}</td>
+                        <td>
+                            <button class="view-btn" onclick="window.location.href='/plant/{{ plant.plant_id }}'">
+                                View
+                            </button>
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <p class="muted">No plants are currently linked to this phytochemical.</p>
+
+        {% endif %}
+
+    </section>
+
+</div>
+
+<footer class="database-footer">
+    <p>&copy; 2026 PhytoVault | Plants & Phytochemicals Database</p>
+</footer>
+
+</body>
+
+</html>

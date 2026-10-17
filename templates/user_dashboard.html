@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>User Dashboard | PhytoVault</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+
+<style>
+
+body{
+
+    background:var(--cream-50);
+    margin:0;
+
+}
+
+.container{
+
+    max-width:1000px;
+    margin:0 auto;
+
+    padding:90px 24px;
+
+    text-align:center;
+
+}
+
+.container h1{
+
+    color:var(--forest-900);
+    font-size:32px;
+
+}
+
+.container .subtitle{
+
+    color:var(--ink-400);
+    margin-top:8px;
+    font-size:14.5px;
+
+}
+
+.cards{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:24px;
+
+    margin-top:44px;
+
+}
+
+.card{
+
+    background:white;
+
+    padding:34px 28px;
+
+    border-radius:var(--radius-lg);
+
+    box-shadow:var(--shadow-sm);
+    border:1px solid var(--cream-200);
+
+    transition:.3s;
+
+}
+
+.card:hover{
+
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-md);
+
+}
+
+.card h2{
+
+    color:var(--forest-800);
+    font-size:18px;
+
+}
+
+.card a{
+
+    display:inline-block;
+
+    margin-top:20px;
+
+    padding:12px 26px;
+
+    background:var(--forest-800);
+    color:white;
+
+    text-decoration:none;
+    font-weight:600;
+    font-size:13.5px;
+
+    border-radius:100px;
+
+    transition:.3s;
+
+}
+
+.card a:hover{
+
+    background:var(--forest-900);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Welcome, {{ user.name }} 👋</h1>
+    <p class="subtitle">Here's where you can go next.</p>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>🌿 Plant Database</h2>
+            <a href="/database">Open</a>
+        </div>
+
+        <div class="card">
+            <h2>👤 My Profile</h2>
+            <a href="/profile">Open</a>
+        </div>
+
+        <div class="card">
+            <h2>🏠 Homepage</h2>
+            <a href="/">Open</a>
+        </div>
+
+        <div class="card">
+            <h2>🚪 Logout</h2>
+            <a href="/logout">Logout</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

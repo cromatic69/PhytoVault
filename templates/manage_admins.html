@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PhytoVault | Manage Admins</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/database.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dialog.css') }}">
+
+</head>
+
+<body>
+
+<!-- =======================================
+     Sidebar
+======================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <h2>🌿 PhytoVault</h2>
+        <p>Admin Panel</p>
+    </div>
+
+    <ul>
+        <li><a href="{{ url_for('home') }}">🏠 Home</a></li>
+        <li><a href="{{ url_for('plants.database') }}">🗂️ Database</a></li>
+        <li><a href="/admin">🛠️ Dashboard</a></li>
+        <li class="active"><a href="/admin/manage-admins">👥 Manage Admins</a></li>
+        <li><a href="/logout">🚪 Logout</a></li>
+    </ul>
+
+</aside>
+
+<!-- =======================================
+     Main Content
+======================================== -->
+
+<div class="main-content">
+
+    {% with messages = get_flashed_messages() %}
+    <script type="application/json" id="pv-flash-data">{{ messages | tojson }}</script>
+    {% endwith %}
+
+    <header class="page-header">
+
+        <div class="page-title">
+            <h1>Manage Admins</h1>
+            <p>Promote trusted users to Admin, or revoke access.</p>
+        </div>
+
+        <div class="page-header-actions">
+
+            <a href="/admin">
+                <button class="view-btn view-btn-muted">← Back to Dashboard</button>
+            </a>
+
+        </div>
+
+    </header>
+
+    <section class="card-panel">
+
+        <div class="table-wrapper">
+
+            <table id="plantTable">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for u in users %}
+
+                    <tr>
+
+                        <td>{{ u.user_id }}</td>
+
+                        <td>
+                            {{ u.full_name }}
+                            {% if current_user and current_user.id == u.user_id %}
+                            <span class="you-tag">(you)</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.email }}</td>
+
+                        <td>
+                            <span class="role-badge {% if u.role == 'Admin' %}admin{% endif %}">
+                                {{ u.role }}
+                            </span>
+                        </td>
+
+                        <td class="actions-cell">
+
+                        {% if u.role == "Admin" %}
+
+                            {% if current_user and current_user.id == u.user_id %}
+
+                                <span class="muted-note">Can't remove yourself</span>
+
+                            {% else %}
+
+                            <form
+                                action="/admin/manage-admins/demote/{{ u.user_id }}"
+                                method="POST"
+                                class="inline-form"
+                                data-confirm="Remove admin access for {{ u.full_name }}?"
+                                data-danger
+                                data-confirm-text="Remove Admin">
+
+                                <select name="fallback_role" class="fallback-select">
+                                    <option value="Student">Downgrade to Student</option>
+                                    <option value="Researcher">Downgrade to Researcher</option>
+                                    <option value="Faculty">Downgrade to Faculty</option>
+                                </select>
+
+                                <button type="submit" class="view-btn view-btn-danger">Remove Admin</button>
+
+                            </form>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <form
+                                action="/admin/manage-admins/promote/{{ u.user_id }}"
+                                method="POST"
+                                class="inline-form"
+                                data-confirm="Make {{ u.full_name }} an Admin?"
+                                data-confirm-text="Make Admin">
+
+                                <button type="submit" class="view-btn">Make Admin</button>
+
+                            </form>
+
+                        {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+<footer class="database-footer">
+    <p>© 2026 PhytoVault | Plants & Phytochemicals Database</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/dialog.js') }}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,300 @@
+/* ==========================================
+   ADMIN PLANT FORM (Add / Edit Plant)
+========================================== */
+
+.form-page{
+
+    max-width:920px;
+    margin:0 auto;
+    padding:40px 25px 60px;
+
+}
+
+.form-header{
+
+    margin-bottom:30px;
+
+}
+
+.form-header h1{
+
+    color:var(--forest-900);
+    font-size:30px;
+    margin-bottom:8px;
+
+}
+
+.form-header p{
+
+    color:#666;
+    font-size:15px;
+    line-height:1.6;
+
+}
+
+/* ==========================================
+   Section Cards
+========================================== */
+
+.form-section{
+
+    background:#ffffff;
+    border-radius:18px;
+    padding:30px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
+}
+
+.form-section h2{
+
+    color:var(--forest-900);
+    font-size:19px;
+    margin-bottom:6px;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+}
+
+.form-section .section-hint{
+
+    color:#888;
+    font-size:13.5px;
+    margin-bottom:22px;
+    line-height:1.5;
+
+}
+
+/* ==========================================
+   Field Grid
+========================================== */
+
+.form-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:22px;
+
+}
+
+.form-field{
+
+    display:flex;
+    flex-direction:column;
+
+}
+
+.form-field.full-width{
+
+    grid-column:1 / -1;
+
+}
+
+.form-field label{
+
+    font-weight:600;
+    font-size:14px;
+    margin-bottom:7px;
+    color:#222;
+
+}
+
+.form-field label .required{
+
+    color:#C62828;
+    margin-left:2px;
+
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea{
+
+    padding:12px 14px;
+
+    border:1px solid var(--cream-200);
+    border-radius:10px;
+
+    font-size:14.5px;
+    font-family:var(--font-body);
+
+    outline:none;
+    transition:.2s;
+
+    background:#ffffff;
+    color:#222;
+
+}
+
+.form-field textarea{
+
+    resize:vertical;
+    line-height:1.6;
+
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus{
+
+    border-color:var(--forest-800);
+    box-shadow:0 0 8px rgba(46,125,50,.15);
+
+}
+
+.field-hint{
+
+    font-size:12.5px;
+    color:#888;
+    margin-top:7px;
+    line-height:1.45;
+
+}
+
+.field-hint .where{
+
+    color:var(--forest-800);
+    font-weight:600;
+
+}
+
+/* ==========================================
+   Image Upload
+========================================== */
+
+.image-upload-box{
+
+    display:flex;
+    gap:22px;
+    align-items:flex-start;
+    flex-wrap:wrap;
+
+}
+
+.image-preview{
+
+    width:150px;
+    height:150px;
+
+    border-radius:14px;
+    object-fit:cover;
+
+    background:var(--cream-50);
+    border:2px dashed var(--cream-200);
+
+    flex:0 0 150px;
+
+}
+
+.image-upload-controls{
+
+    flex:1;
+    min-width:220px;
+
+}
+
+/* ==========================================
+   Actions
+========================================== */
+
+.form-actions{
+
+    display:flex;
+    gap:15px;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+
+    margin-top:5px;
+
+}
+
+.btn-secondary{
+
+    padding:14px 26px;
+
+    border-radius:10px;
+    border:1px solid var(--cream-200);
+
+    background:#ffffff;
+    color:var(--ink-600);
+
+    font-weight:600;
+    font-size:14.5px;
+
+    text-decoration:none;
+
+    display:inline-flex;
+    align-items:center;
+
+    cursor:pointer;
+    transition:.25s;
+
+}
+
+.btn-secondary:hover{
+
+    background:var(--cream-100);
+
+}
+
+.btn-primary{
+
+    padding:14px 32px;
+
+    border-radius:10px;
+    border:none;
+
+    background:var(--forest-800);
+    color:#ffffff;
+
+    font-weight:600;
+    font-size:15px;
+
+    cursor:pointer;
+    transition:.25s;
+
+}
+
+.btn-primary:hover{
+
+    background:var(--forest-900);
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:600px){
+
+    .form-actions{
+
+        flex-direction:column-reverse;
+
+    }
+
+    .btn-primary,
+    .btn-secondary{
+
+        width:100%;
+        justify-content:center;
+        text-align:center;
+
+    }
+
+    .image-preview{
+
+        width:120px;
+        height:120px;
+        flex-basis:120px;
+
+    }
+
+}
+

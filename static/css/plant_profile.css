@@ -1,0 +1,852 @@
+/* ==========================================
+   PLANT / PHYTOCHEMICAL PROFILE PAGES
+========================================== */
+
+.back-link{
+
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+
+    text-decoration:none;
+    color:var(--forest-800);
+    font-weight:600;
+    font-size:15px;
+
+    margin-bottom:20px;
+
+}
+
+.back-link:hover{
+
+    color:var(--forest-900);
+    text-decoration:underline;
+
+}
+
+/* ==========================================
+   Hero
+========================================== */
+
+.profile-hero{
+
+    display:flex;
+    gap:35px;
+
+    background:#ffffff;
+    border-radius:20px;
+    padding:35px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    margin-bottom:30px;
+
+}
+
+.profile-hero-image{
+
+    flex:0 0 280px;
+
+}
+
+.profile-hero-image img{
+
+    width:100%;
+    height:280px;
+
+    object-fit:cover;
+
+    border-radius:16px;
+
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+
+}
+
+.profile-hero-info{
+
+    flex:1;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+
+}
+
+.profile-hero-info h1{
+
+    font-size:34px;
+    color:var(--forest-900);
+    margin-bottom:6px;
+
+}
+
+.profile-hero-info h3{
+
+    font-weight:400;
+    font-style:italic;
+    color:#555;
+    font-size:19px;
+    margin-bottom:18px;
+
+}
+
+.badge-row{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+
+    margin-bottom:18px;
+
+}
+
+.badge{
+
+    display:inline-block;
+
+    padding:8px 16px;
+
+    border-radius:30px;
+
+    font-size:13px;
+    font-weight:600;
+
+    background:var(--mint-100);
+    color:var(--forest-800);
+
+    border:1px solid var(--mint-100);
+
+}
+
+.badge.badge-outline{
+
+    background:#ffffff;
+    color:#1565C0;
+    border:1px solid #BBDEFB;
+
+}
+
+.badge.badge-warning{
+
+    background:#FFF3E0;
+    color:#E65100;
+    border:1px solid #FFE0B2;
+
+}
+
+.profile-hero-info p{
+
+    color:#444;
+    line-height:1.7;
+    font-size:15px;
+
+}
+
+/* ==========================================
+   Section Cards
+========================================== */
+
+.profile-section{
+
+    background:#ffffff;
+    border-radius:18px;
+    padding:30px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    margin-bottom:25px;
+
+}
+
+.profile-section h2{
+
+    color:var(--forest-900);
+    font-size:22px;
+    margin-bottom:20px;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+}
+
+.profile-section h2 .icon{
+
+    font-size:24px;
+
+}
+
+.profile-section p.muted{
+
+    color:#888;
+    font-style:italic;
+
+}
+
+/* ==========================================
+   Info Grid (Overview / Classification)
+========================================== */
+
+.info-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+
+}
+
+.info-item{
+
+    background:var(--cream-50);
+    border-left:4px solid var(--forest-800);
+    border-radius:10px;
+
+    padding:16px 18px;
+
+}
+
+.info-item .label{
+
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    color:#777;
+
+    margin-bottom:6px;
+
+}
+
+.info-item .value{
+
+    font-size:16px;
+    font-weight:600;
+    color:#222;
+
+}
+
+.description-text{
+
+    color:#444;
+    line-height:1.8;
+    font-size:15.5px;
+
+}
+
+/* ==========================================
+   Classification (Taxonomy chips)
+========================================== */
+
+.taxonomy-tree{
+
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px;
+
+}
+
+.taxonomy-chip{
+
+    background:var(--forest-900);
+    color:#fff;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+}
+
+.taxonomy-chip small{
+
+    display:block;
+    font-size:10px;
+    opacity:.75;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+
+}
+
+.taxonomy-arrow{
+
+    color:#bbb;
+    font-size:18px;
+
+}
+
+/* ==========================================
+   Medicinal Uses List
+========================================== */
+
+.uses-list{
+
+    list-style:none;
+
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+
+}
+
+.uses-list li{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+
+    background:var(--cream-50);
+    border-radius:10px;
+
+    padding:14px 18px;
+
+}
+
+.uses-list .use-name{
+
+    font-weight:600;
+    color:#222;
+
+}
+
+.uses-list .use-notes{
+
+    color:#666;
+    font-size:13.5px;
+    width:100%;
+
+}
+
+.evidence-badge{
+
+    font-size:12px;
+    font-weight:600;
+    padding:5px 12px;
+    border-radius:20px;
+
+}
+
+.evidence-Traditional{
+
+    background:#FFF3E0;
+    color:#E65100;
+
+}
+
+.evidence-Experimental{
+
+    background:#E3F2FD;
+    color:#1565C0;
+
+}
+
+.evidence-Clinical{
+
+    background:var(--mint-100);
+    color:var(--forest-800);
+
+}
+
+/* ==========================================
+   Phytochemical Cards
+========================================== */
+
+.phyto-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:18px;
+
+}
+
+.phyto-card{
+
+    display:block;
+    text-decoration:none;
+    color:inherit;
+
+    background:var(--cream-50);
+    border:1px solid var(--cream-200);
+    border-radius:14px;
+
+    padding:20px;
+
+    transition:.25s;
+
+}
+
+.phyto-card:hover{
+
+    transform:translateY(-4px);
+    box-shadow:0 10px 20px rgba(0,0,0,.1);
+    border-color:var(--mint-300);
+
+}
+
+.phyto-card h4{
+
+    color:var(--forest-900);
+    font-size:17px;
+    margin-bottom:8px;
+
+}
+
+.phyto-card .formula{
+
+    font-family:'Courier New',monospace;
+    background:var(--mint-100);
+    color:var(--forest-800);
+
+    display:inline-block;
+
+    padding:3px 10px;
+    border-radius:6px;
+
+    font-size:13px;
+
+    margin-bottom:8px;
+
+}
+
+.phyto-card .meta{
+
+    font-size:13px;
+    color:#666;
+    line-height:1.6;
+
+}
+
+/* ==========================================
+   Gallery
+========================================== */
+
+.gallery-grid{
+
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:14px;
+
+}
+
+.gallery-grid img{
+
+    width:100%;
+    height:140px;
+    object-fit:cover;
+    border-radius:12px;
+
+    box-shadow:0 6px 14px rgba(0,0,0,.1);
+
+}
+
+/* ==========================================
+   Phytochemical Detail Page
+========================================== */
+
+.structure-image{
+
+    flex:0 0 240px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:var(--cream-50);
+    border-radius:16px;
+
+    padding:15px;
+
+}
+
+.structure-image img{
+
+    max-width:100%;
+    max-height:220px;
+
+}
+
+.structure-placeholder{
+
+    font-size:70px;
+    color:var(--mint-300);
+
+}
+
+.properties-table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+.properties-table tr{
+
+    border-bottom:1px solid #eee;
+
+}
+
+.properties-table td{
+
+    padding:14px 10px;
+    font-size:14.5px;
+
+}
+
+.properties-table td:first-child{
+
+    color:#777;
+    font-weight:600;
+    width:220px;
+
+}
+
+/* ==========================================
+   Top Profile Grid (Info Panel + Network Graph)
+========================================== */
+
+.profile-top-grid{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+
+    margin-bottom:25px;
+
+}
+
+.info-panel{
+
+    background:#ffffff;
+    border-radius:18px;
+    padding:30px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+}
+
+.info-panel h1{
+
+    color:var(--forest-900);
+    font-size:28px;
+    margin-bottom:4px;
+
+}
+
+.info-panel h3{
+
+    font-weight:400;
+    font-style:italic;
+    color:#666;
+    font-size:16px;
+    margin-bottom:20px;
+
+}
+
+.taxonomy-list{
+
+    margin-bottom:22px;
+
+}
+
+.taxonomy-list .tax-row{
+
+    display:flex;
+    gap:8px;
+
+    padding:8px 0;
+
+    border-bottom:1px solid var(--cream-100);
+
+    font-size:14.5px;
+
+}
+
+.taxonomy-list .tax-row .tax-label{
+
+    font-weight:700;
+    color:#222;
+    flex:0 0 190px;
+
+}
+
+.taxonomy-list .tax-row .tax-value{
+
+    color:#444;
+
+}
+
+.info-buttons-label{
+
+    font-weight:700;
+    margin-bottom:12px;
+    display:block;
+    color:#222;
+
+}
+
+.info-buttons{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+
+}
+
+.info-buttons a{
+
+    background:var(--forest-800);
+    color:#ffffff;
+
+    text-decoration:none;
+
+    padding:10px 16px;
+
+    border-radius:8px;
+
+    font-size:13px;
+    font-weight:600;
+
+    transition:.25s;
+
+}
+
+.info-buttons a:hover{
+
+    background:var(--forest-900);
+    transform:translateY(-2px);
+
+}
+
+/* ==========================================
+   Network Graph
+========================================== */
+
+.network-card{
+
+    background:#ffffff;
+    border-radius:18px;
+    padding:20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+
+    display:flex;
+    flex-direction:column;
+
+}
+
+.network-graph{
+
+    flex:1;
+
+    min-height:360px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+}
+
+.network-graph svg{
+
+    width:100%;
+    height:auto;
+    max-height:400px;
+
+}
+
+.network-node-label{
+
+    font-size:9px;
+    fill:#333;
+}
+
+.network-center-label{
+
+    font-size:13px;
+    font-weight:700;
+    fill:#1565C0;
+
+}
+
+.network-caption{
+
+    text-align:center;
+    color:#777;
+    font-size:13.5px;
+    margin-top:10px;
+    font-style:italic;
+
+}
+
+/* ==========================================
+   Phytochemical Data Table
+========================================== */
+
+.datatable-controls{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+
+    margin-bottom:18px;
+
+}
+
+.entries-control,
+.search-control{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    font-size:14px;
+    color:#555;
+
+}
+
+.entries-control select{
+
+    padding:8px 10px;
+    border:1px solid var(--cream-200);
+    border-radius:8px;
+    outline:none;
+
+}
+
+.search-control input{
+
+    padding:8px 12px;
+    border:1px solid var(--cream-200);
+    border-radius:8px;
+    outline:none;
+    min-width:220px;
+
+}
+
+.search-control input:focus,
+.entries-control select:focus{
+
+    border-color:var(--forest-800);
+
+}
+
+#phytoTable thead th{
+
+    background:var(--forest-900);
+    color:#ffffff;
+
+    padding:14px 16px;
+    text-align:left;
+    font-size:13.5px;
+
+}
+
+#phytoTable tbody td{
+
+    padding:12px 16px;
+    font-size:14px;
+    border-bottom:1px solid var(--cream-100);
+
+}
+
+#phytoTable tbody tr:hover{
+
+    background:var(--cream-50);
+
+}
+
+#phytoTable a{
+
+    color:#1565C0;
+    text-decoration:none;
+    font-weight:600;
+
+}
+
+#phytoTable a:hover{
+
+    text-decoration:underline;
+
+}
+
+.datatable-footer{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:15px;
+
+    margin-top:15px;
+
+}
+
+.pagination-controls{
+
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+
+}
+
+.pagination-controls .page-number{
+
+    padding:8px 14px;
+    font-size:13.5px;
+
+}
+
+#phytoInfo{
+
+    color:#777;
+    font-size:13.5px;
+
+}
+
+/* ==========================================
+   Responsive
+========================================== */
+
+@media(max-width:900px){
+
+    .profile-top-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .profile-hero{
+
+        flex-direction:column;
+
+    }
+
+    .profile-hero-image,
+    .structure-image{
+
+        flex:none;
+        width:100%;
+
+    }
+
+    .profile-hero-image img{
+
+        height:220px;
+
+    }
+
+    .properties-table td:first-child{
+
+        width:150px;
+
+    }
+
+}

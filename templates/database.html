@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PhytoVault | Plant Database</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/database.css') }}">
+
+</head>
+
+<body>
+
+<!-- =======================================
+     Sidebar
+======================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <h2>🌿 PhytoVault</h2>
+
+        <p>Plant Database</p>
+
+    </div>
+
+    <ul>
+
+        <li>
+            <a href="{{ url_for('home') }}">🏠 Home</a>
+        </li>
+
+        <li class="active">
+            <a href="{{ url_for('plants.database') }}">🗂️ Database</a>
+        </li>
+
+        <li>
+            <a href="#">ℹ️ About</a>
+        </li>
+
+        <li>
+            <a href="#">✉️ Contact</a>
+        </li>
+
+        <li>
+            <a href="/logout">🚪 Logout</a>
+        </li>
+
+    </ul>
+
+</aside>
+
+<!-- =======================================
+     Main Content
+======================================== -->
+
+<div class="main-content">
+
+<!-- =======================================
+     Top Navigation
+======================================== -->
+
+<header class="topbar">
+
+    <div class="page-title">
+
+        <h1>
+
+            Plants & Phytochemicals Database
+
+        </h1>
+
+    </div>
+
+    <div class="top-actions">
+
+        <input
+
+            type="text"
+
+            id="globalSearch"
+
+            placeholder="Search plants, phytochemicals..."
+
+        >
+
+        <button id="searchBtn">
+
+            Search
+
+        </button>
+
+    </div>
+
+</header>
+
+<!-- =======================================
+     Statistics
+======================================== -->
+
+<section class="stats-grid">
+
+<div class="stat-box">
+
+<h2 id="plantCount">
+
+1250
+
+</h2>
+
+<p>
+
+Plants
+
+</p>
+
+</div>
+
+<div class="stat-box">
+
+<h2 id="compoundCount">
+
+5800
+
+</h2>
+
+<p>
+
+Phytochemicals
+
+</p>
+
+</div>
+
+<div class="stat-box">
+
+<h2 id="familyCount">
+
+340
+
+</h2>
+
+<p>
+
+Families
+
+</p>
+
+</div>
+
+<div class="stat-box">
+
+<h2 id="diseaseCount">
+
+210
+
+</h2>
+
+<p>
+
+Medicinal Uses
+
+</p>
+
+</div>
+
+</section>
+
+<!-- =======================================
+     Search Filters
+======================================== -->
+
+<section class="filter-section">
+
+<h2>
+
+Search Database
+
+</h2>
+
+<div class="filters">
+
+<input
+
+type="text"
+
+id="searchPlant"
+
+placeholder="Search by plant name"
+
+>
+
+<select id="category">
+
+<option value="">
+
+All Categories
+
+</option>
+
+<option>
+
+Medicinal Plant
+
+</option>
+
+<option>
+
+Herb
+
+</option>
+
+<option>
+
+Tree
+
+</option>
+
+<option>
+
+Shrub
+
+</option>
+
+<option>
+
+Climber
+
+</option>
+
+</select>
+
+<select id="family">
+
+<option value="">
+
+All Families
+
+</option>
+
+<option>
+
+Asteraceae
+
+</option>
+
+<option>
+
+Fabaceae
+
+</option>
+
+<option>
+
+Rutaceae
+
+</option>
+
+<option>
+
+Lamiaceae
+
+</option>
+
+<option>
+
+Zingiberaceae
+
+</option>
+
+</select>
+
+<select id="sort">
+
+<option>
+
+Sort A-Z
+
+</option>
+
+<option>
+
+Sort Z-A
+
+</option>
+
+<option>
+
+Newest
+
+</option>
+
+<option>
+
+Oldest
+
+</option>
+
+</select>
+
+<button id="filterBtn">
+
+Apply Filters
+
+</button>
+
+<button id="resetBtn">
+
+Reset
+
+</button>
+
+</div>
+
+</section>
+
+<!-- =======================================
+     Featured Plants
+======================================== -->
+
+<section class="featured-section">
+
+<h2>
+
+Featured Plants
+
+</h2>
+
+<div class="featured-grid">
+
+<div class="featured-card">
+
+<img src="{{ url_for('static', filename='images/plants/default.jpg') }}"
+alt="Neem">
+
+<h3>
+Neem
+</h3>
+
+<p>
+
+Azadirachta indica
+
+</p>
+
+<button>
+
+View Details
+
+</button>
+
+</div>
+
+<div class="featured-card">
+
+<img src="{{ url_for('static', filename='images/plants/default.jpg') }}"
+alt="Tulsi">
+
+<h3>
+
+Tulsi
+
+</h3>
+
+<p>
+
+Ocimum tenuiflorum
+
+</p>
+
+<button>
+
+View Details
+
+</button>
+
+</div>
+
+<div class="featured-card">
+
+<img src="{{ url_for('static', filename='images/plants/default.jpg') }}"
+alt="Aloe Vera">
+
+<h3>
+
+Aloe Vera
+
+</h3>
+
+<p>
+
+Aloe barbadensis
+
+</p>
+
+<button>
+
+View Details
+
+</button>
+
+</div>
+
+<div class="featured-card">
+
+<img src="{{ url_for('static', filename='images/plants/default.jpg') }}"
+alt="Turmeric">
+
+<h3>
+
+Turmeric
+
+</h3>
+
+<p>
+
+Curcuma longa
+
+</p>
+
+<button>
+
+View Details
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- =======================================
+     Plant Database Table
+======================================== -->
+
+<section class="database-section">
+
+<h2>
+
+Plant Records
+
+</h2>
+
+<div class="table-wrapper">
+
+<table id="plantTable">
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Common Name</th>
+
+<th>Scientific Name</th>
+
+<th>Family</th>
+
+<th>Part Used</th>
+
+<th>Phytochemicals</th>
+
+<th>Medicinal Uses</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tableBody">
+
+{% if plants %}
+
+    {% for plant in plants %}
+
+    <tr>
+
+        <td>{{ plant.id }}</td>
+
+        <td>{{ plant.commonName }}</td>
+
+        <td><i>{{ plant.scientificName }}</i></td>
+
+        <td>{{ plant.family }}</td>
+
+        <td>{{ plant.part or "-" }}</td>
+
+        <td>{{ plant.compound or "-" }}</td>
+
+        <td>{{ plant.medicinalUses or "-" }}</td>
+
+        <td>
+
+            <button
+                class="view-btn"
+                onclick="window.location.href='/plant/{{ plant.id }}'">
+
+                View
+
+            </button>
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+{% else %}
+
+<tr>
+
+    <td colspan="8" style="text-align:center;padding:30px;">
+
+        No Plants Found
+
+    </td>
+
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</section>
+
+<section class="pagination">
+
+<button class="page-btn">Previous</button>
+
+<button class="page-number active">1</button>
+<button class="page-number">2</button>
+<button class="page-number">3</button>
+<button class="page-number">4</button>
+
+<button class="page-btn">Next</button>
+
+</section>
+
+<section class="results">
+
+<p>
+
+Showing 1 - 12 of 1250 Plants
+
+</p>
+
+</section>
+
+<!-- =====================================
+     Plant Details Modal
+====================================== -->
+
+<div class="modal" id="plantModal">
+
+<div class="modal-content">
+
+<span class="close-modal">
+
+&times;
+
+</span>
+
+<h2>
+
+Plant Details
+
+</h2>
+
+<img src="{{ url_for('static', filename='images/plants/default.jpg') }}"
+alt="Neem" id="modalImage">
+
+<h3 id="modalName">
+
+Neem
+
+</h3>
+
+<p>
+
+<strong>Scientific Name:</strong>
+
+<span id="modalScientific">
+
+Azadirachta indica
+
+</span>
+
+</p>
+
+<p>
+
+<strong>Family:</strong>
+
+<span id="modalFamily">
+
+Meliaceae
+
+</span>
+
+</p>
+
+<p>
+
+<strong>Parts Used:</strong>
+
+Leaves, Bark
+
+</p>
+
+<p>
+
+<strong>Major Phytochemicals:</strong>
+
+Azadirachtin, Nimbin, Nimbolide
+
+</p>
+
+<p>
+
+<strong>Medicinal Uses:</strong>
+
+Antibacterial, Antifungal, Wound Healing
+
+</p>
+
+<button class="download-btn">
+
+Download PDF
+
+</button>
+
+</div>
+
+</div>
+
+<footer class="database-footer">
+
+<p>
+
+&copy; 2026 PhytoVault | Plants & Phytochemicals Database
+
+</p>
+
+</footer>
+
+</div>
+
+<script
+src="{{ url_for('static', filename='js/database.js') }}">
+</script>
+
+</body>
+
+</html>
