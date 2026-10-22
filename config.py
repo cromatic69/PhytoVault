@@ -30,14 +30,23 @@ class Config:
     )
 
     # -----------------------------
-    # Email Configuration (Resend HTTP API)
+    # Email Configuration (Gmail SMTP)
     # -----------------------------
-    RESEND_API_KEY = os.environ.get(
-        "RESEND_API_KEY",
+    MAIL_SERVER = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+
+    MAIL_PORT = int(os.environ.get("MAIL_PORT", 587))
+
+    MAIL_USERNAME = os.environ.get(
+        "MAIL_USERNAME",
+        "ayushsenpai6969@gmail.com"
+    )
+
+    MAIL_PASSWORD = os.environ.get(
+        "MAIL_PASSWORD",
         ""
     )
 
     MAIL_FROM = os.environ.get(
         "MAIL_FROM",
-        "PhytoVault <onboarding@resend.dev>"
+        "PhytoVault <ayushsenpai6969@gmail.com>"
     )
