@@ -100,9 +100,13 @@ body.pv{ background:var(--pv-bg); color:var(--pv-ink);
 
 /* network graph */
 #networkGraph svg{ width:100%; height:auto; max-height:420px; }
-.network-center-label{ font-size:13px; font-weight:600; fill:#14432a; }
-.network-node-label{ font-size:11px; fill:#33443a; }
+#networkGraph{ min-height:360px; display:flex; align-items:center; justify-content:center; }
+.network-center-label{ font-size:13px; font-weight:700; fill:#1565C0; }
+.network-node-label{ font-size:10px; fill:#333; }
+.network-node polygon{ transition:transform .15s; transform-box:fill-box; transform-origin:center; }
+.network-node:hover polygon{ transform:scale(1.45); }
 .network-node:hover .network-node-label{ fill:#237a4b; font-weight:600; }
+.network-caption{ text-align:center; color:#777; font-size:.85rem; margin:10px 0 0; font-style:italic; }
 
 /* buttons */
 .btn-pv{ background:var(--pv-green-700); color:#fff; border:0; } .btn-pv:hover{ background:var(--pv-green-800); color:#fff; }
