@@ -4,6 +4,7 @@ from services.plant_service import (
     get_all_plants,
     get_plant_by_id
 )
+from services.search_service import filter_plants
 from services.phytochemical_service import (
     get_phytochemical_by_id,
     get_plants_by_phytochemical
@@ -15,32 +16,11 @@ plants = Blueprint("plants", __name__)
 @plants.route("/database")
 def database():
 
-    keyword = request.args.get("search", "").lower()
+    keyword = request.args.get("search", "")
 
-    plants_data = get_all_plants()
+    field = request.args.get("field", "all")
 
-    if keyword != "":
-
-        filtered = []
-
-        for plant in plants_data:
-
-            text = " ".join([
-
-                str(plant.get("commonName","")),
-                str(plant.get("scientificName","")),
-                str(plant.get("family","")),
-                str(plant.get("compound","")),
-                str(plant.get("part","")),
-                str(plant.get("medicinalUses",""))
-
-            ]).lower()
-
-            if keyword in text:
-
-                filtered.append(plant)
-
-        plants_data = filtered
+    plants_data = filter_plants(get_all_plants(), keyword, field)
 
     return render_template(
 

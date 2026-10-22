@@ -1,6 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, flash, session
 from werkzeug.utils import secure_filename
 from utils.db import get_db
+from services.research_service import (
+    parse_research_form,
+    save_research_details,
+    TIERS
+)
 import os
 import re
 
@@ -258,6 +263,7 @@ def sync_plant_details(cursor, plant_id, parts, uses, chems):
 
 PLANT_FIELDS = (
     "common_name", "scientific_name", "family", "genus", "species",
+    "kingdom", "phylum", "class_name", "order_name", "occurrence_tier",
     "category", "origin", "distribution", "habitat", "description",
     "traditional_uses", "conservation_status", "toxicity"
 )
@@ -265,7 +271,77 @@ PLANT_FIELDS = (
 
 def form_values():
 
-    return [request.form.get(f, "").strip() for f in PLANT_FIELDS]
+    values = []
+
+    for f in PLANT_FIELDS:
+
+        value = request.form.get(f, "").strip()
+
+        if f == "occurrence_tier":
+            value = value.upper() if value.upper() in TIERS else None
+
+        values.append(value)
+
+    return values
+
+
+def save_all_details(cursor, plant_id):
+
+    save_research_details(
+        cursor, plant_id,
+        parse_research_form(request.form),
+        request.form.get("plant_parts"),
+        parse_parts
+    )
+
+
+def empty_research():
+
+    return {"uses": [], "chems": [], "bios": [], "admet": {}, "refs": []}
+
+
+def load_research(cursor, plant_id):
+    """Existing structured data for pre-filling the edit wizard."""
+
+    cursor.execute("""
+        SELECT mu.disease_name, pu.plant_part, pu.preparation
+        FROM plant_uses pu
+        JOIN medicinal_uses mu ON mu.use_id = pu.use_id
+        WHERE pu.plant_id=%s
+        ORDER BY pu.id
+    """, (plant_id,))
+    uses = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT ph.compound_name, ph.compound_class
+        FROM plant_phytochemicals ppc
+        JOIN phytochemicals ph ON ph.phytochemical_id = ppc.phytochemical_id
+        WHERE ppc.plant_id=%s
+        GROUP BY ph.phytochemical_id, ph.compound_name, ph.compound_class
+        ORDER BY MIN(ppc.id)
+    """, (plant_id,))
+    chems = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT activity_name FROM plant_bioactivities WHERE plant_id=%s ORDER BY bioactivity_id",
+        (plant_id,)
+    )
+    bios = [r["activity_name"] for r in cursor.fetchall()]
+
+    cursor.execute("SELECT * FROM plant_admet WHERE plant_id=%s", (plant_id,))
+    admet = cursor.fetchone() or {}
+
+    cursor.execute("""
+        SELECT rp.authors, rp.title, rp.journal, rp.publication_year AS year,
+               rp.doi, rp.paper_url AS url
+        FROM paper_plants pp
+        JOIN research_papers rp ON rp.paper_id = pp.paper_id
+        WHERE pp.plant_id=%s
+        ORDER BY pp.id
+    """, (plant_id,))
+    refs = cursor.fetchall()
+
+    return {"uses": uses, "chems": chems, "bios": bios, "admet": admet, "refs": refs}
 
 
 @admin.route("/admin/add", methods=["GET", "POST"])
@@ -289,12 +365,7 @@ def add_plant():
 
             plant_id = cursor.lastrowid
 
-            sync_plant_details(
-                cursor, plant_id,
-                parse_parts(request.form.get("plant_parts")),
-                split_list(request.form.get("medicinal_uses")),
-                split_list(request.form.get("phytochemicals"))
-            )
+            save_all_details(cursor, plant_id)
 
             connection.commit()
 
@@ -316,7 +387,11 @@ def add_plant():
 
     return render_template(
 
-        "add_plant.html"
+        "add_plant.html",
+
+        plant={},
+        research=empty_research(),
+        plant_parts_text=""
 
     )
 
@@ -341,12 +416,7 @@ def edit(id):
                 form_values() + [image_path, id]
             )
 
-            sync_plant_details(
-                cursor, id,
-                parse_parts(request.form.get("plant_parts")),
-                split_list(request.form.get("medicinal_uses")),
-                split_list(request.form.get("phytochemicals"))
-            )
+            save_all_details(cursor, id)
 
             connection.commit()
 
@@ -380,25 +450,7 @@ def edit(id):
 
     parts = cursor.fetchall()
 
-    cursor.execute("""
-        SELECT DISTINCT mu.disease_name
-        FROM plant_uses pu
-        JOIN medicinal_uses mu ON mu.use_id = pu.use_id
-        WHERE pu.plant_id=%s
-        ORDER BY mu.disease_name
-    """, (id,))
-
-    uses = [r["disease_name"] for r in cursor.fetchall()]
-
-    cursor.execute("""
-        SELECT DISTINCT ph.compound_name
-        FROM plant_phytochemicals ppc
-        JOIN phytochemicals ph ON ph.phytochemical_id = ppc.phytochemical_id
-        WHERE ppc.plant_id=%s
-        ORDER BY ph.compound_name
-    """, (id,))
-
-    chems = [r["compound_name"] for r in cursor.fetchall()]
+    research = load_research(cursor, id)
 
     cursor.close()
 
@@ -414,9 +466,8 @@ def edit(id):
         "edit_plant.html",
 
         plant=plant,
-        medicinal_uses_text=", ".join(uses),
-        plant_parts_text=plant_parts_text,
-        phytochemicals_text=", ".join(chems)
+        research=research,
+        plant_parts_text=plant_parts_text
 
     )
 

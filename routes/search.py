@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from services.plant_service import get_all_plants
+from services.search_service import filter_plants
 
 search = Blueprint("search", __name__)
 
@@ -9,34 +10,14 @@ search = Blueprint("search", __name__)
 def search_plants():
 
     keyword = request.args.get("q", "").strip().lower()
+    field = request.args.get("field", "all").strip().lower()
     category = request.args.get("category", "").strip().lower()
     family = request.args.get("family", "").strip().lower()
     sort = request.args.get("sort", "").strip().lower()
 
     plants = get_all_plants()
 
-    if keyword != "":
-
-        filtered = []
-
-        for plant in plants:
-
-            searchable = " ".join([
-
-                str(plant.get("commonName", "")),
-                str(plant.get("scientificName", "")),
-                str(plant.get("family", "")),
-                str(plant.get("part", "")),
-                str(plant.get("compound", "")),
-                str(plant.get("medicinalUses", ""))
-
-            ]).lower()
-
-            if keyword in searchable:
-
-                filtered.append(plant)
-
-        plants = filtered
+    plants = filter_plants(plants, keyword, field)
 
     if category != "":
 
