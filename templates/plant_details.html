@@ -111,13 +111,6 @@
     </table>
   {% endcall %}
 
-  {% if plant.phytochemicals %}
-  {% call section('sec-net', 'fa-diagram-project', 'Plant–Phytochemical Network', False) %}
-    <div id="networkGraph"></div>
-    <p class="text-center text-muted small mb-0">Click a compound to open its page.</p>
-  {% endcall %}
-  {% endif %}
-
   {% call section('sec-ext', 'fa-up-right-from-square', 'External Databases', False) %}
     <div class="ext-links">
       {% set q = plant.scientific_name | urlencode %}
@@ -187,6 +180,17 @@
 
 {# ---------- Phytochemicals ---------- #}
 <div class="tab-pane fade" id="tab-chem">
+
+  {% if plant.phytochemicals %}
+  <div class="pv-card mb-3">
+    <div class="pv-card-head"><i class="fa-solid fa-diagram-project"></i>Plant–Phytochemical Network</div>
+    <div class="pv-card-body">
+      <div id="networkGraph"></div>
+      <p class="network-caption">Plant – Phytochemical associations. Click a compound to open its page.</p>
+    </div>
+  </div>
+  {% endif %}
+
   <div class="pv-card">
     <div class="pv-card-head"><i class="fa-solid fa-flask"></i>Phytochemicals</div>
     <div class="pv-card-body">
