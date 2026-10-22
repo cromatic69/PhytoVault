@@ -1,52 +1,35 @@
-import requests
+import smtplib
+from email.mime.text import MIMEText
 
 from config import Config
 
 
 def send_email(to_email, subject, body):
     """
-    Sends a plain-text email via the Resend HTTP API.
+    Sends a plain-text email using the Gmail SMTP settings in config.py.
 
-    Uses HTTPS (port 443) instead of raw SMTP, because many hosts
-    (including Render's free tier) block outbound SMTP connections,
-    which used to make this call hang until the request worker timed
-    out. An HTTP API call fails fast and cleanly instead.
+    A short timeout is set on the connection so that if the host
+    blocks outbound SMTP (as Render's free tier does), this fails
+    quickly with a clear error instead of hanging until the whole
+    request worker is killed.
 
     Returns True on success, False on failure (failures are not raised
     so that a mail-server hiccup doesn't crash the request - callers
     should check the return value and respond accordingly).
     """
 
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = Config.MAIL_FROM
+    msg["To"] = to_email
+
     try:
 
-        response = requests.post(
+        with smtplib.SMTP(Config.MAIL_SERVER, Config.MAIL_PORT, timeout=10) as server:
 
-            "https://api.resend.com/emails",
-
-            headers={
-
-                "Authorization": f"Bearer {Config.RESEND_API_KEY}",
-                "Content-Type": "application/json"
-
-            },
-
-            json={
-
-                "from": Config.MAIL_FROM,
-                "to": [to_email],
-                "subject": subject,
-                "text": body
-
-            },
-
-            timeout=10
-
-        )
-
-        if response.status_code >= 400:
-
-            print("Failed to send email:", response.status_code, response.text)
-            return False
+            server.starttls()
+            server.login(Config.MAIL_USERNAME, Config.MAIL_PASSWORD)
+            server.sendmail(Config.MAIL_FROM, [to_email], msg.as_string())
 
         return True
 
