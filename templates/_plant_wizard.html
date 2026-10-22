@@ -1,0 +1,268 @@
+{# Shared by add_plant.html and edit_plant.html.
+   Context: plant (dict), research (uses/chems/bios/admet/refs), plant_parts_text, editing (bool) #}
+
+{% macro use_row(d='', p='', r='') %}
+<div class="repeat-row row g-2">
+  <div class="col-md-4"><input class="form-control" name="use_disease[]" value="{{ d }}" placeholder="Disease / condition (e.g. Wound healing)"></div>
+  <div class="col-md-3"><input class="form-control" name="use_part[]" value="{{ p }}" placeholder="Plant part (e.g. Leaf)" list="partList"></div>
+  <div class="col-md-4"><input class="form-control" name="use_prep[]" value="{{ r }}" placeholder="Preparation (optional)"></div>
+  <div class="col-md-1 text-end"><button type="button" class="btn btn-outline-danger remove-row" title="Remove"><i class="fa-solid fa-xmark"></i></button></div>
+</div>
+{% endmacro %}
+
+{% macro chem_row(n='', c='') %}
+<div class="repeat-row row g-2">
+  <div class="col-md-6"><input class="form-control" name="chem_name[]" value="{{ n }}" placeholder="Compound name (e.g. Quercetin)"></div>
+  <div class="col-md-5"><input class="form-control" name="chem_class[]" value="{{ c }}" placeholder="Compound class (e.g. Flavonoid)" list="classList"></div>
+  <div class="col-md-1 text-end"><button type="button" class="btn btn-outline-danger remove-row" title="Remove"><i class="fa-solid fa-xmark"></i></button></div>
+</div>
+{% endmacro %}
+
+{% macro bio_row(n='') %}
+<div class="repeat-row row g-2">
+  <div class="col-11"><input class="form-control" name="bio_name[]" value="{{ n }}" placeholder="Activity (e.g. Antioxidant)"></div>
+  <div class="col-1 text-end"><button type="button" class="btn btn-outline-danger remove-row" title="Remove"><i class="fa-solid fa-xmark"></i></button></div>
+</div>
+{% endmacro %}
+
+{% macro ref_row(r={}) %}
+<div class="repeat-row ref-row">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <strong class="small text-muted ref-label">Reference</strong>
+    <button type="button" class="btn btn-sm btn-outline-danger remove-row"><i class="fa-solid fa-xmark me-1"></i>Remove</button>
+  </div>
+  <div class="row g-2">
+    <div class="col-12"><input class="form-control" name="ref_authors[]" value="{{ r.authors or '' }}" placeholder="Authors (e.g. Sharma A, Gupta R, Das P)"></div>
+    <div class="col-12"><input class="form-control" name="ref_title[]" value="{{ r.title or '' }}" placeholder="Title *"></div>
+    <div class="col-md-8"><input class="form-control" name="ref_journal[]" value="{{ r.journal or '' }}" placeholder="Journal"></div>
+    <div class="col-md-4"><input class="form-control" name="ref_year[]" value="{{ r.year or '' }}" placeholder="Year" inputmode="numeric" maxlength="4"></div>
+    <div class="col-md-5"><input class="form-control" name="ref_doi[]" value="{{ r.doi or '' }}" placeholder="DOI (10.xxxx/xxxxx)"></div>
+    <div class="col-md-7"><input class="form-control" name="ref_url[]" value="{{ r.url or '' }}" placeholder="URL (https://...)"></div>
+  </div>
+</div>
+{% endmacro %}
+
+{% set steps = [
+  ('General Information','fa-circle-info'), ('Taxonomy','fa-sitemap'),
+  ('Medicinal Uses','fa-notes-medical'), ('Phytochemicals','fa-flask'),
+  ('Bioactivity','fa-heart-pulse'), ('ADMET','fa-vial-circle-check'),
+  ('References','fa-book-open')
+] %}
+
+<form method="POST" enctype="multipart/form-data" id="plantWizard" novalidate>
+
+  <div class="pv-card mb-3">
+    <ol class="wiz-steps" id="wizSteps">
+      {% for label, icon in steps %}
+      <li><button type="button" class="wiz-step" data-step="{{ loop.index0 }}">
+        <span class="dot"><i class="fa-solid {{ icon }}"></i></span><span class="lbl">{{ loop.index }}. {{ label }}</span>
+      </button></li>
+      {% endfor %}
+    </ol>
+    <div class="progress wiz-progress"><div class="progress-bar" id="wizBar" style="width:14%"></div></div>
+  </div>
+
+  <div class="pv-card">
+  <div class="pv-card-body">
+
+    {# ============ Step 1: General ============ #}
+    <section class="wiz-panel" data-step="0">
+      <h2 class="wiz-title"><i class="fa-solid fa-circle-info"></i>General Information</h2>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" for="common_name">Common Name <span class="text-danger">*</span></label>
+          <input class="form-control" id="common_name" name="common_name" value="{{ plant.common_name or '' }}" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="scientific_name">Scientific Name <span class="text-danger">*</span></label>
+          <input class="form-control sci" id="scientific_name" name="scientific_name" value="{{ plant.scientific_name or '' }}" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="family">Family</label>
+          <input class="form-control" id="family" name="family" value="{{ plant.family or '' }}">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="occurrence_tier">Occurrence Tier</label>
+          <select class="form-select" id="occurrence_tier" name="occurrence_tier">
+            <option value="">— Not assigned —</option>
+            {% for t in ['A','B','C','R'] %}<option value="{{ t }}" {{ 'selected' if plant.occurrence_tier == t }}>Tier {{ t }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label" for="distribution">Distribution</label>
+          <input class="form-control" id="distribution" name="distribution" value="{{ plant.distribution or '' }}" placeholder="e.g. India, Nepal, Southeast Asia">
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="description">Description</label>
+          <textarea class="form-control" id="description" name="description" rows="4">{{ plant.description or '' }}</textarea>
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="habitat">Habitat</label>
+          <textarea class="form-control" id="habitat" name="habitat" rows="2">{{ plant.habitat or '' }}</textarea>
+        </div>
+        <div class="col-12">
+          <label class="form-label">Plant Image</label>
+          <div class="d-flex gap-3 align-items-center flex-wrap">
+            <img id="imagePreview" class="wiz-img" alt="Preview"
+                 src="{{ url_for('static', filename=plant.image_path) if plant.image_path else url_for('static', filename='images/plants/default.jpg') }}">
+            <div>
+              <input class="form-control" type="file" id="imageInput" name="image" accept="image/*">
+              <div class="form-text">{% if editing %}Leave empty to keep the current photo.{% else %}Optional. A placeholder is used if empty.{% endif %}</div>
+              {% if editing %}<input type="hidden" name="old_image" value="{{ plant.image_path or '' }}">{% endif %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <button class="btn btn-sm btn-outline-pv" type="button" data-bs-toggle="collapse" data-bs-target="#moreDetails">
+            <i class="fa-solid fa-sliders me-1"></i>Additional details (type, origin, traditional uses, conservation, toxicity)
+          </button>
+          <div class="collapse {{ 'show' if editing }} mt-3" id="moreDetails">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label" for="category">Category / Type</label>
+                <select class="form-select" id="category" name="category">
+                  <option value="">— Select —</option>
+                  {% for o in ["Tree","Shrub","Herb","Climber","Succulent","Medicinal Plant","Other"] %}<option value="{{ o }}" {{ 'selected' if plant.category == o }}>{{ o }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="origin">Origin</label>
+                <input class="form-control" id="origin" name="origin" value="{{ plant.origin or '' }}">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label" for="conservation_status">Conservation Status (IUCN)</label>
+                <select class="form-select" id="conservation_status" name="conservation_status">
+                  <option value="">— Not Evaluated —</option>
+                  {% for o in ["Least Concern","Near Threatened","Vulnerable","Endangered","Critically Endangered","Extinct in the Wild","Data Deficient"] %}<option value="{{ o }}" {{ 'selected' if plant.conservation_status == o }}>{{ o }}</option>{% endfor %}
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="traditional_uses">Traditional Uses</label>
+                <textarea class="form-control" id="traditional_uses" name="traditional_uses" rows="3">{{ plant.traditional_uses or '' }}</textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="toxicity">Toxicity (general note)</label>
+                <input class="form-control" id="toxicity" name="toxicity" value="{{ plant.toxicity or '' }}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    {# ============ Step 2: Taxonomy ============ #}
+    <section class="wiz-panel" data-step="1" hidden>
+      <h2 class="wiz-title"><i class="fa-solid fa-sitemap"></i>Taxonomy</h2>
+      <div class="row g-3">
+        <div class="col-md-6"><label class="form-label" for="kingdom">Kingdom</label>
+          <input class="form-control" id="kingdom" name="kingdom" value="{{ plant.kingdom or 'Plantae' }}"></div>
+        <div class="col-md-6"><label class="form-label" for="phylum">Division / Phylum</label>
+          <input class="form-control" id="phylum" name="phylum" value="{{ plant.phylum or '' }}" placeholder="e.g. Tracheophyta"></div>
+        <div class="col-md-6"><label class="form-label" for="class_name">Class</label>
+          <input class="form-control" id="class_name" name="class_name" value="{{ plant.class_name or '' }}" placeholder="e.g. Magnoliopsida"></div>
+        <div class="col-md-6"><label class="form-label" for="order_name">Order</label>
+          <input class="form-control" id="order_name" name="order_name" value="{{ plant.order_name or '' }}" placeholder="e.g. Asterales"></div>
+        <div class="col-md-4"><label class="form-label">Family <span class="form-text">(set in step 1)</span></label>
+          <input class="form-control" id="familyMirror" readonly tabindex="-1"></div>
+        <div class="col-md-4"><label class="form-label" for="genus">Genus</label>
+          <input class="form-control sci" id="genus" name="genus" value="{{ plant.genus or '' }}"></div>
+        <div class="col-md-4"><label class="form-label" for="species">Species</label>
+          <input class="form-control sci" id="species" name="species" value="{{ plant.species or '' }}"></div>
+      </div>
+    </section>
+
+    {# ============ Step 3: Medicinal uses ============ #}
+    <section class="wiz-panel" data-step="2" hidden>
+      <h2 class="wiz-title"><i class="fa-solid fa-notes-medical"></i>Medicinal Uses</h2>
+      <p class="text-muted">One row per use. The same disease can appear more than once with a different plant part.</p>
+      <div class="repeat-list" id="list-use">
+        {% for u in research.uses %}{{ use_row(u.disease_name, u.plant_part or '', u.preparation or '') }}{% endfor %}
+      </div>
+      <button type="button" class="btn btn-outline-pv add-row" data-target="list-use" data-tpl="tpl-use"><i class="fa-solid fa-plus me-1"></i>Add another medicinal use</button>
+
+      <details class="mt-4">
+        <summary class="text-muted">Plant parts summary (optional free text)</summary>
+        <textarea class="form-control mt-2" name="plant_parts" rows="3" placeholder="One part per line. Text after a colon is its description, e.g. Leaf: crushed into a paste">{{ plant_parts_text or '' }}</textarea>
+        <div class="form-text">Parts named in the uses above are added automatically.</div>
+      </details>
+    </section>
+
+    {# ============ Step 4: Phytochemicals ============ #}
+    <section class="wiz-panel" data-step="3" hidden>
+      <h2 class="wiz-title"><i class="fa-solid fa-flask"></i>Phytochemicals</h2>
+      <div class="repeat-list" id="list-chem">
+        {% for c in research.chems %}{{ chem_row(c.compound_name, c.compound_class or '') }}{% endfor %}
+      </div>
+      <button type="button" class="btn btn-outline-pv add-row" data-target="list-chem" data-tpl="tpl-chem"><i class="fa-solid fa-plus me-1"></i>Add another phytochemical</button>
+
+      <details class="mt-4">
+        <summary class="text-muted">Bulk add: paste a list of compounds</summary>
+        <textarea class="form-control mt-2" id="chemBulk" rows="3" placeholder="Quercetin, Kaempferol, Chlorogenic acid (comma or one per line)"></textarea>
+        <button type="button" class="btn btn-sm btn-outline-pv mt-2" id="chemBulkBtn">Add these as rows</button>
+      </details>
+    </section>
+
+    {# ============ Step 5: Bioactivity ============ #}
+    <section class="wiz-panel" data-step="4" hidden>
+      <h2 class="wiz-title"><i class="fa-solid fa-heart-pulse"></i>Bioactivity</h2>
+      <div class="mb-3 d-flex flex-wrap gap-2 align-items-center">
+        <span class="small text-muted">Quick add:</span>
+        {% for b in ['Antioxidant','Antibacterial','Anticancer','Anti-inflammatory','Antidiabetic','Antifungal','Antiviral'] %}
+        <button type="button" class="btn btn-sm btn-outline-pv quick-bio" data-name="{{ b }}">+ {{ b }}</button>
+        {% endfor %}
+      </div>
+      <div class="repeat-list" id="list-bio">
+        {% for b in research.bios %}{{ bio_row(b) }}{% endfor %}
+      </div>
+      <button type="button" class="btn btn-outline-pv add-row" data-target="list-bio" data-tpl="tpl-bio"><i class="fa-solid fa-plus me-1"></i>Add another bioactivity</button>
+    </section>
+
+    {# ============ Step 6: ADMET ============ #}
+    <section class="wiz-panel" data-step="5" hidden>
+      <h2 class="wiz-title"><i class="fa-solid fa-vial-circle-check"></i>ADMET</h2>
+      <p class="text-muted">Absorption, Distribution, Metabolism, Excretion and Toxicity. All optional.</p>
+      <div class="row g-3">
+        {% for k, label in [('absorption','Absorption'),('distribution','Distribution'),('metabolism','Metabolism'),('excretion','Excretion'),('toxicity','Toxicity')] %}
+        <div class="col-md-{{ 12 if k == 'toxicity' else 6 }}">
+          <label class="form-label" for="admet_{{ k }}">{{ label }}</label>
+          <textarea class="form-control" id="admet_{{ k }}" name="admet_{{ k }}" rows="3">{{ research.admet[k] or '' }}</textarea>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+    {# ============ Step 7: References ============ #}
+    <section class="wiz-panel" data-step="6" hidden>
+      <h2 class="wiz-title"><i class="fa-solid fa-book-open"></i>References</h2>
+      <div class="repeat-list" id="list-ref">
+        {% for r in research.refs %}{{ ref_row(r) }}{% endfor %}
+      </div>
+      <button type="button" class="btn btn-outline-pv add-row" data-target="list-ref" data-tpl="tpl-ref"><i class="fa-solid fa-plus me-1"></i>Add another reference</button>
+    </section>
+
+  </div>
+
+  <div class="wiz-footer">
+    <a class="btn btn-link text-muted" href="{{ url_for('admin.dashboard') }}">Cancel</a>
+    <div class="ms-auto d-flex gap-2">
+      <button type="button" class="btn btn-outline-pv" id="wizPrev"><i class="fa-solid fa-arrow-left me-1"></i>Back</button>
+      <button type="button" class="btn btn-pv" id="wizNext">Next<i class="fa-solid fa-arrow-right ms-1"></i></button>
+      <button type="submit" class="btn btn-pv" id="wizSubmit" hidden><i class="fa-solid fa-floppy-disk me-1"></i>{{ 'Update Plant' if editing else 'Save Plant' }}</button>
+    </div>
+  </div>
+  </div>
+
+</form>
+
+<template id="tpl-use">{{ use_row() }}</template>
+<template id="tpl-chem">{{ chem_row() }}</template>
+<template id="tpl-bio">{{ bio_row() }}</template>
+<template id="tpl-ref">{{ ref_row() }}</template>
+
+<datalist id="partList">
+  {% for p in ['Leaf','Root','Stem','Bark','Flower','Fruit','Seed','Rhizome','Whole plant'] %}<option value="{{ p }}">{% endfor %}
+</datalist>
+<datalist id="classList">
+  {% for c in ['Flavonoid','Alkaloid','Terpenoid','Phenolic acid','Tannin','Saponin','Glycoside','Steroid','Coumarin','Quinone','Essential oil','Polyacetylene','Carotenoid'] %}<option value="{{ c }}">{% endfor %}
+</datalist>

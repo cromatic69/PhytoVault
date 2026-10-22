@@ -1,327 +1,321 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "research_base.html" %}
 
-<head>
+{% block title %}{{ plant.common_name }}{% endblock %}
 
-    <meta charset="UTF-8">
+{% block breadcrumbs %}
+<li class="breadcrumb-item"><a href="{{ url_for('plants.database') }}">Database</a></li>
+{% if plant.family %}<li class="breadcrumb-item"><a href="{{ url_for('plants.database', search=plant.family, field='family') }}">{{ plant.family }}</a></li>{% endif %}
+<li class="breadcrumb-item active sci" aria-current="page">{{ plant.scientific_name }}</li>
+{% endblock %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% macro bio_icon(name) -%}
+{%- set n = name | lower -%}
+{%- if 'oxid' in n -%}fa-shield-halved
+{%- elif 'bacter' in n or 'microb' in n -%}fa-bacteria
+{%- elif 'cancer' in n or 'tumor' in n or 'tumour' in n -%}fa-ribbon
+{%- elif 'inflam' in n -%}fa-fire-flame-curved
+{%- elif 'diab' in n or 'glyc' in n -%}fa-droplet
+{%- elif 'vir' in n -%}fa-virus
+{%- elif 'fung' in n -%}fa-seedling
+{%- else -%}fa-flask-vial
+{%- endif -%}
+{%- endmacro %}
 
-    <title>{{ plant.common_name }} | PhytoVault</title>
+{% macro tier_badge(tier) -%}
+{% if tier %}<span class="tier-badge tier-{{ tier }}" title="Occurrence Tier {{ tier }}"><i class="fa-solid fa-layer-group"></i>Tier {{ tier }}</span>
+{% else %}<span class="tier-badge tier-none" title="Occurrence tier not assigned">Tier —</span>{% endif %}
+{%- endmacro %}
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/database.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/plant_profile.css') }}">
+{% macro section(id, icon, title, open=True) %}
+<div class="pv-card mb-3">
+  <button class="pv-card-head pv-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#{{ id }}" aria-expanded="{{ 'true' if open else 'false' }}">
+    <i class="fa-solid {{ icon }}"></i>{{ title }}<i class="fa-solid fa-chevron-down chev"></i>
+  </button>
+  <div class="collapse {{ 'show' if open }}" id="{{ id }}">
+    <div class="pv-card-body">{{ caller() }}</div>
+  </div>
+</div>
+{% endmacro %}
 
-</head>
+{% block content %}
 
-<body>
+{# ================= Hero ================= #}
+<div class="pv-card mb-4">
+  <div class="pv-hero">
+    <img class="pv-hero-img"
+         src="{{ url_for('static', filename=plant.image_path) if plant.image_path else url_for('static', filename='images/plants/default.jpg') }}"
+         alt="{{ plant.common_name }}">
+    <div class="pv-hero-main">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+        {{ tier_badge(plant.occurrence_tier) }}
+        {% if plant.category %}<span class="badge text-bg-light border">{{ plant.category }}</span>{% endif %}
+      </div>
+      <h1 class="sci">{{ plant.scientific_name }}</h1>
+      <div class="fs-5 text-secondary">{{ plant.common_name }}</div>
 
-<!-- =======================================
-     Sidebar
-======================================== -->
+      <div class="pv-meta">
+        <span><i class="fa-solid fa-sitemap me-1"></i>Family: <b>{{ plant.family or '—' }}</b></span>
+        <span><i class="fa-solid fa-earth-asia me-1"></i>Distribution: <b>{{ plant.distribution or '—' }}</b></span>
+      </div>
 
-<aside class="sidebar">
-
-    <div class="logo">
-        <h2>🌿 PhytoVault</h2>
-        <p>Plant Database</p>
+      <div class="pv-stats">
+        <div class="pv-stat"><div class="n">{{ plant.medicinal_uses | length }}</div><div class="l">Medicinal uses</div></div>
+        <div class="pv-stat"><div class="n">{{ plant.phytochemicals | length }}</div><div class="l">Phytochemicals</div></div>
+        <div class="pv-stat"><div class="n">{{ plant.bioactivities | length }}</div><div class="l">Bioactivities</div></div>
+        <div class="pv-stat"><div class="n">{{ plant.references | length }}</div><div class="l">References</div></div>
+      </div>
     </div>
-
-    <ul>
-        <li><a href="{{ url_for('home') }}">🏠 Home</a></li>
-        <li class="active"><a href="{{ url_for('plants.database') }}">🗂️ Database</a></li>
-        <li><a href="#">ℹ️ About</a></li>
-        <li><a href="#">✉️ Contact</a></li>
-        <li><a href="/logout">🚪 Logout</a></li>
-    </ul>
-
-</aside>
-
-<div class="main-content">
-
-    <a class="back-link" href="{{ url_for('plants.database') }}">
-        ← Back to Database
-    </a>
-
-    <!-- =======================================
-         Info Panel + Network Graph
-    ======================================== -->
-
-    <section class="profile-top-grid">
-
-        <div class="info-panel">
-
-            {% if plant.image_path %}
-            <img
-                src="{{ url_for('static', filename=plant.image_path) }}"
-                alt="{{ plant.common_name }}"
-                style="width:100%;max-height:200px;object-fit:cover;border-radius:12px;margin-bottom:20px;">
-            {% endif %}
-
-            <h1>{{ plant.common_name }}</h1>
-            <h3>{{ plant.scientific_name }}</h3>
-
-            <div class="taxonomy-list">
-
-                <div class="tax-row">
-                    <span class="tax-label">Kingdom:</span>
-                    <span class="tax-value">Plantae</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">Family:</span>
-                    <span class="tax-value">{{ plant.family or "—" }}</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">Genus:</span>
-                    <span class="tax-value">{{ plant.genus or "—" }}</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">Species:</span>
-                    <span class="tax-value">{{ plant.species or "—" }}</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">Type:</span>
-                    <span class="tax-value">{{ plant.category or "—" }}</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">Origin:</span>
-                    <span class="tax-value">{{ plant.origin or "—" }}</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">Distribution:</span>
-                    <span class="tax-value">{{ plant.distribution or "—" }}</span>
-                </div>
-
-                <div class="tax-row">
-                    <span class="tax-label">IUCN Red List Category:</span>
-                    <span class="tax-value">{{ plant.conservation_status or "Not Evaluated" }}</span>
-                </div>
-
-            </div>
-
-            <span class="info-buttons-label">More Information:</span>
-
-            <div class="info-buttons">
-                <a href="https://www.tropicos.org/name/Search?name={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">Tropicos</a>
-                <a href="http://www.worldfloraonline.org/search?query={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">World Flora Online</a>
-                <a href="https://powo.science.kew.org/results?q={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">PoW</a>
-                <a href="https://www.ipni.org/search?q={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">IPNI</a>
-                <a href="https://www.gbif.org/species/search?q={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">GBIF</a>
-                <a href="https://en.wikipedia.org/wiki/Special:Search?search={{ plant.scientific_name | urlencode }}" target="_blank" rel="noopener">Wikipedia</a>
-            </div>
-
-        </div>
-
-        <div class="network-card">
-
-            <div class="network-graph" id="networkGraph"></div>
-
-            <p class="network-caption">Plant – Phytochemical associations</p>
-
-        </div>
-
-    </section>
-
-    <script type="application/json" id="networkData">
-    {
-        "plantName": {{ plant.common_name | tojson }},
-        "phytochemicals": [
-            {% for compound in plant.phytochemicals %}
-            {"id": {{ compound.phytochemical_id }}, "name": {{ compound.compound_name | tojson }}}{{ "," if not loop.last }}
-            {% endfor %}
-        ]
-    }
-    </script>
-
-    <!-- =======================================
-         Overview
-    ======================================== -->
-
-    <section class="profile-section">
-
-        <h2><span class="icon">📋</span> Overview</h2>
-
-        {% if plant.description %}
-        <p class="description-text" style="margin-bottom:20px;">{{ plant.description }}</p>
-        {% endif %}
-
-        <div class="info-grid">
-
-            <div class="info-item">
-                <div class="label">Habitat</div>
-                <div class="value">{{ plant.habitat or "Unknown" }}</div>
-            </div>
-
-            <div class="info-item">
-                <div class="label">Toxicity</div>
-                <div class="value">{{ plant.toxicity or "None Reported" }}</div>
-            </div>
-
-        </div>
-
-        {% if plant.traditional_uses %}
-        <br>
-        <div class="info-item" style="border-left-color:#43A047;">
-            <div class="label">Traditional Uses</div>
-            <div class="value" style="font-weight:400; line-height:1.7;">{{ plant.traditional_uses }}</div>
-        </div>
-        {% endif %}
-
-    </section>
-
-    <!-- =======================================
-         Medicinal Uses
-    ======================================== -->
-
-    <section class="profile-section">
-
-        <h2><span class="icon">💊</span> Medicinal Uses</h2>
-
-        {% if plant.medicinal_uses %}
-
-        <ul class="uses-list">
-
-            {% for use in plant.medicinal_uses %}
-
-            <li>
-                <span class="use-name">{{ use.disease_name }}</span>
-                <span class="evidence-badge evidence-{{ use.evidence_level }}">{{ use.evidence_level }}</span>
-                {% if use.notes %}
-                <span class="use-notes">{{ use.notes }}</span>
-                {% endif %}
-            </li>
-
-            {% endfor %}
-
-        </ul>
-
-        {% else %}
-
-        <p class="muted">No medicinal uses have been documented yet.</p>
-
-        {% endif %}
-
-    </section>
-
-    <!-- =======================================
-         Associated Phytochemicals
-    ======================================== -->
-
-    <section class="profile-section">
-
-        <h2><span class="icon">⚗️</span> Associated Phytochemicals</h2>
-
-        {% if plant.phytochemicals %}
-
-        <div class="datatable-controls">
-
-            <div class="entries-control">
-                Show
-                <select id="phytoPageSize">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
-                    <option value="25">25</option>
-                    <option value="all">All</option>
-                </select>
-                entries
-            </div>
-
-            <div class="search-control">
-                Search:
-                <input type="text" id="phytoSearch" placeholder="Search phytochemicals...">
-            </div>
-
-        </div>
-
-        <div class="table-wrapper">
-
-            <table id="phytoTable">
-
-                <thead>
-                    <tr>
-                        <th data-sort>Phytochemical ID</th>
-                        <th data-sort>Phytochemical Name</th>
-                        <th data-sort>Molecular Formula</th>
-                        <th data-sort>Plant Part</th>
-                        <th data-sort>Concentration</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for compound in plant.phytochemicals %}
-
-                    <tr data-search="{{ (compound.compound_name ~ ' ' ~ (compound.molecular_formula or '') ~ ' ' ~ (compound.plant_part or '')) | lower }}">
-                        <td>PHY-{{ '%06d' % compound.phytochemical_id }}</td>
-                        <td><a href="{{ url_for('plants.phytochemical_details', phytochemical_id=compound.phytochemical_id) }}">{{ compound.compound_name }}</a></td>
-                        <td>{{ compound.molecular_formula or "-" }}</td>
-                        <td>{{ compound.plant_part or "-" }}</td>
-                        <td>{{ compound.concentration or "-" }}</td>
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-        <div class="datatable-footer">
-            <span id="phytoInfo"></span>
-            <div id="phytoPagination" class="pagination-controls"></div>
-        </div>
-
-        {% else %}
-
-        <p class="muted">No phytochemicals have been documented yet.</p>
-
-        {% endif %}
-
-    </section>
-
-    <!-- =======================================
-         Gallery
-    ======================================== -->
-
-    {% if plant.gallery %}
-
-    <section class="profile-section">
-
-        <h2><span class="icon">🖼️</span> Gallery</h2>
-
-        <div class="gallery-grid">
-
-            {% for image in plant.gallery %}
-
-            <img
-                src="{{ url_for('static', filename=image.image_path) }}"
-                alt="{{ image.caption or plant.common_name }}">
-
-            {% endfor %}
-
-        </div>
-
-    </section>
-
-    {% endif %}
+  </div>
+</div>
+
+{# ================= Tabs ================= #}
+<ul class="nav nav-tabs pv-tabs mb-3" id="plantTabs" role="tablist">
+  <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-overview" type="button"><i class="fa-solid fa-circle-info me-1"></i>Overview</button></li>
+  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-taxonomy" type="button"><i class="fa-solid fa-sitemap me-1"></i>Taxonomy</button></li>
+  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-uses" type="button"><i class="fa-solid fa-notes-medical me-1"></i>Medicinal Uses <span class="badge rounded-pill">{{ plant.medicinal_uses | length }}</span></button></li>
+  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-chem" type="button"><i class="fa-solid fa-flask me-1"></i>Phytochemicals <span class="badge rounded-pill">{{ plant.phytochemicals | length }}</span></button></li>
+  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-bio" type="button"><i class="fa-solid fa-heart-pulse me-1"></i>Bioactivity <span class="badge rounded-pill">{{ plant.bioactivities | length }}</span></button></li>
+  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-admet" type="button"><i class="fa-solid fa-vial-circle-check me-1"></i>ADMET</button></li>
+  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-refs" type="button"><i class="fa-solid fa-book-open me-1"></i>References <span class="badge rounded-pill">{{ plant.references | length }}</span></button></li>
+</ul>
+
+<div class="tab-content">
+
+{# ---------- Overview ---------- #}
+<div class="tab-pane fade show active" id="tab-overview">
+
+  {% call section('sec-desc', 'fa-align-left', 'Description') %}
+    {% if plant.description %}<p class="mb-0" style="white-space:pre-line">{{ plant.description }}</p>
+    {% else %}<p class="text-muted mb-0">No description available.</p>{% endif %}
+  {% endcall %}
+
+  {% call section('sec-geo', 'fa-earth-asia', 'Habitat & Distribution') %}
+    <table class="table kv">
+      <tr><th>Habitat</th><td>{{ plant.habitat or '—' }}</td></tr>
+      <tr><th>Distribution</th><td>{{ plant.distribution or '—' }}</td></tr>
+      <tr><th>Origin</th><td>{{ plant.origin or '—' }}</td></tr>
+      <tr><th>Occurrence Tier</th><td>{{ tier_badge(plant.occurrence_tier) }}</td></tr>
+    </table>
+  {% endcall %}
+
+  {% if plant.traditional_uses %}
+  {% call section('sec-trad', 'fa-mortar-pestle', 'Traditional Uses') %}
+    <p class="mb-0" style="white-space:pre-line">{{ plant.traditional_uses }}</p>
+  {% endcall %}
+  {% endif %}
+
+  {% call section('sec-safety', 'fa-triangle-exclamation', 'Conservation & Safety', False) %}
+    <table class="table kv">
+      <tr><th>IUCN Red List Category</th><td>{{ plant.conservation_status or 'Not Evaluated' }}</td></tr>
+      <tr><th>Toxicity</th><td>{{ plant.toxicity or 'None reported' }}</td></tr>
+    </table>
+  {% endcall %}
+
+  {% if plant.phytochemicals %}
+  {% call section('sec-net', 'fa-diagram-project', 'Plant–Phytochemical Network', False) %}
+    <div id="networkGraph"></div>
+    <p class="text-center text-muted small mb-0">Click a compound to open its page.</p>
+  {% endcall %}
+  {% endif %}
+
+  {% call section('sec-ext', 'fa-up-right-from-square', 'External Databases', False) %}
+    <div class="ext-links">
+      {% set q = plant.scientific_name | urlencode %}
+      <a href="https://powo.science.kew.org/results?q={{ q }}" target="_blank" rel="noopener">POWO</a>
+      <a href="https://www.gbif.org/species/search?q={{ q }}" target="_blank" rel="noopener">GBIF</a>
+      <a href="https://www.ipni.org/search?q={{ q }}" target="_blank" rel="noopener">IPNI</a>
+      <a href="https://www.tropicos.org/name/Search?name={{ q }}" target="_blank" rel="noopener">Tropicos</a>
+      <a href="http://www.worldfloraonline.org/search?query={{ q }}" target="_blank" rel="noopener">World Flora Online</a>
+      <a href="https://www.ncbi.nlm.nih.gov/taxonomy/?term={{ q }}" target="_blank" rel="noopener">NCBI Taxonomy</a>
+      <a href="https://en.wikipedia.org/wiki/Special:Search?search={{ q }}" target="_blank" rel="noopener">Wikipedia</a>
+    </div>
+  {% endcall %}
+
+  {% if plant.gallery %}
+  {% call section('sec-gal', 'fa-images', 'Gallery', False) %}
+    <div class="row g-2">
+      {% for image in plant.gallery %}
+      <div class="col-6 col-md-3"><img class="img-fluid rounded border" src="{{ url_for('static', filename=image.image_path) }}" alt="{{ image.caption or plant.common_name }}"></div>
+      {% endfor %}
+    </div>
+  {% endcall %}
+  {% endif %}
 
 </div>
 
-<footer class="database-footer">
-    <p>&copy; 2026 PhytoVault | Plants & Phytochemicals Database</p>
-</footer>
+{# ---------- Taxonomy ---------- #}
+<div class="tab-pane fade" id="tab-taxonomy">
+  <div class="pv-card">
+    <div class="pv-card-head"><i class="fa-solid fa-sitemap"></i>Taxonomic Classification</div>
+    <table class="table kv">
+      <tr><th>Kingdom</th><td>{{ plant.kingdom or 'Plantae' }}</td></tr>
+      <tr><th>Division / Phylum</th><td>{{ plant.phylum or '—' }}</td></tr>
+      <tr><th>Class</th><td>{{ plant.class_name or '—' }}</td></tr>
+      <tr><th>Order</th><td>{{ plant.order_name or '—' }}</td></tr>
+      <tr><th>Family</th><td>{{ plant.family or '—' }}</td></tr>
+      <tr><th>Genus</th><td class="sci">{{ plant.genus or '—' }}</td></tr>
+      <tr><th>Species</th><td class="sci">{{ plant.species or '—' }}</td></tr>
+    </table>
+  </div>
+</div>
 
+{# ---------- Medicinal uses ---------- #}
+<div class="tab-pane fade" id="tab-uses">
+  <div class="pv-card">
+    <div class="pv-card-head"><i class="fa-solid fa-notes-medical"></i>Medicinal Uses</div>
+    <div class="pv-card-body">
+      {% if plant.medicinal_uses %}
+      <table class="table table-hover w-100 dt-table" id="usesTable">
+        <thead><tr><th>Disease / Condition</th><th>Plant Part Used</th><th>Preparation</th><th>Evidence</th></tr></thead>
+        <tbody>
+        {% for u in plant.medicinal_uses %}
+          <tr>
+            <td><a href="{{ url_for('plants.database', search=u.disease_name, field='disease') }}">{{ u.disease_name }}</a></td>
+            <td>{{ u.plant_part or '—' }}</td>
+            <td>{{ u.preparation or '—' }}</td>
+            <td><span class="badge text-bg-light border">{{ u.evidence_level or 'Traditional' }}</span></td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state"><i class="fa-solid fa-notes-medical"></i>No medicinal uses documented yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{# ---------- Phytochemicals ---------- #}
+<div class="tab-pane fade" id="tab-chem">
+  <div class="pv-card">
+    <div class="pv-card-head"><i class="fa-solid fa-flask"></i>Phytochemicals</div>
+    <div class="pv-card-body">
+      {% if plant.phytochemicals %}
+      <table class="table table-hover w-100 dt-table" id="chemTable">
+        <thead><tr><th>ID</th><th>Compound Name</th><th>Compound Class</th><th>Formula</th><th>PubChem</th></tr></thead>
+        <tbody>
+        {% for c in plant.phytochemicals %}
+          <tr>
+            <td data-order="{{ c.phytochemical_id }}">PHY-{{ '%06d' % c.phytochemical_id }}</td>
+            <td><a href="{{ url_for('plants.phytochemical_details', phytochemical_id=c.phytochemical_id) }}">{{ c.compound_name }}</a></td>
+            <td>{{ c.compound_class or '—' }}</td>
+            <td>{{ c.molecular_formula or '—' }}</td>
+            <td>{% if c.pubchem_cid %}<a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{ c.pubchem_cid | urlencode }}" target="_blank" rel="noopener">CID {{ c.pubchem_cid }}</a>{% else %}—{% endif %}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state"><i class="fa-solid fa-flask"></i>No phytochemicals documented yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{# ---------- Bioactivity ---------- #}
+<div class="tab-pane fade" id="tab-bio">
+  <div class="pv-card">
+    <div class="pv-card-head"><i class="fa-solid fa-heart-pulse"></i>Reported Bioactivities</div>
+    <div class="pv-card-body">
+      {% if plant.bioactivities %}
+      <div class="bio-grid">
+        {% for b in plant.bioactivities %}
+        <div class="bio-card">
+          <span class="ic"><i class="fa-solid {{ bio_icon(b) }}"></i></span>
+          <a href="{{ url_for('plants.database', search=b, field='bioactivity') }}">{{ b }}</a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state"><i class="fa-solid fa-heart-pulse"></i>No bioactivities documented yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{# ---------- ADMET ---------- #}
+<div class="tab-pane fade" id="tab-admet">
+  <div class="pv-card">
+    <div class="pv-card-head"><i class="fa-solid fa-vial-circle-check"></i>ADMET Profile</div>
+    <div class="pv-card-body">
+      {% set a = plant.admet %}
+      {% if a and (a.absorption or a.distribution or a.metabolism or a.excretion or a.toxicity) %}
+      <div class="admet-grid">
+        {% for key, label, icon in [('absorption','Absorption','fa-arrow-down-to-line'),('distribution','Distribution','fa-diagram-project'),('metabolism','Metabolism','fa-gears'),('excretion','Excretion','fa-arrow-up-from-bracket'),('toxicity','Toxicity','fa-skull-crossbones')] %}
+        <div class="admet-item {{ 'tox' if key == 'toxicity' }}">
+          <div class="k"><i class="fa-solid {{ icon }}"></i>{{ label }}</div>
+          <div class="v">{% if a[key] %}{{ a[key] }}{% else %}<span class="na">Not reported</span>{% endif %}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty-state"><i class="fa-solid fa-vial-circle-check"></i>No ADMET data documented yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{# ---------- References ---------- #}
+<div class="tab-pane fade" id="tab-refs">
+  <div class="pv-card">
+    <div class="pv-card-head"><i class="fa-solid fa-book-open"></i>References</div>
+    <div class="pv-card-body">
+      {% if plant.references %}
+      <ol class="citations">
+        {% for r in plant.references %}
+        <li>
+          {% if r.authors %}{{ r.authors }}{% endif %}{% if r.year %} ({{ r.year }}){% endif %}{% if r.authors or r.year %}. {% endif %}
+          <strong>{{ r.title }}.</strong>
+          {% if r.journal %}<em>{{ r.journal }}</em>.{% endif %}
+          <span class="ref-links d-block">
+            {% if r.doi %}<a href="https://doi.org/{{ r.doi | replace('https://doi.org/', '') | urlencode }}" target="_blank" rel="noopener"><i class="fa-solid fa-link me-1"></i>DOI: {{ r.doi | replace('https://doi.org/', '') }}</a>{% endif %}
+            {% if r.url %}<a href="{{ r.url }}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i>Full text</a>{% endif %}
+          </span>
+        </li>
+        {% endfor %}
+      </ol>
+      {% else %}
+      <div class="empty-state"><i class="fa-solid fa-book-open"></i>No references added yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script type="application/json" id="networkData">
+{
+  "plantName": {{ plant.common_name | tojson }},
+  "phytochemicals": [
+    {% for c in plant.phytochemicals %}{"id": {{ c.phytochemical_id }}, "name": {{ c.compound_name | tojson }}}{{ "," if not loop.last }}{% endfor %}
+  ]
+}
+</script>
+
+{% endblock %}
+
+{% block scripts %}
 <script src="{{ url_for('static', filename='js/plant_network.js') }}"></script>
-<script src="{{ url_for('static', filename='js/phyto_table.js') }}"></script>
+<script>
+$(function () {
+  $('.dt-table').DataTable({
+    pageLength: 10,
+    autoWidth: false,
+    language: { search: '', searchPlaceholder: 'Search table...' }
+  });
 
-</body>
-
-</html>
+  // keep the active tab in the URL hash, so tabs are linkable
+  var hash = location.hash;
+  if (hash) {
+    var btn = document.querySelector('#plantTabs [data-bs-target="' + hash + '"]');
+    if (btn) bootstrap.Tab.getOrCreateInstance(btn).show();
+  }
+  document.querySelectorAll('#plantTabs [data-bs-toggle="tab"]').forEach(function (b) {
+    b.addEventListener('shown.bs.tab', function (e) {
+      history.replaceState(null, '', e.target.getAttribute('data-bs-target'));
+      $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+    });
+  });
+});
+</script>
+{% endblock %}
