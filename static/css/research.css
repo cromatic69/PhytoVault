@@ -1,0 +1,117 @@
+/* ==========================================================
+   PhytoVault research portal: white / green scientific theme
+   Used with Bootstrap 5, Font Awesome 6, DataTables.
+========================================================== */
+:root{
+  --pv-green-900:#14432a; --pv-green-800:#1b5e3b; --pv-green-700:#237a4b;
+  --pv-green-600:#2e8f5a; --pv-green-100:#e3f3ea; --pv-green-50:#f2faf5;
+  --pv-ink:#1d2b24; --pv-muted:#62766a; --pv-line:#e1eae4; --pv-bg:#f6f9f7;
+  --pv-radius:14px; --pv-shadow:0 1px 2px rgba(20,67,42,.06),0 6px 18px rgba(20,67,42,.06);
+  --bs-primary:#237a4b; --bs-primary-rgb:35,122,75; --bs-link-color:#1b6b42; --bs-link-hover-color:#14432a;
+}
+body.pv{ background:var(--pv-bg); color:var(--pv-ink);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; }
+.pv a{ text-decoration:none; } .pv a:hover{ text-decoration:underline; }
+.pv .sci{ font-style:italic; font-family:'Source Serif 4',Georgia,serif; }
+
+/* navbar */
+.pv-nav{ background:#fff; border-bottom:1px solid var(--pv-line); }
+.pv-brand{ font-weight:700; color:var(--pv-green-800)!important; letter-spacing:-.01em; }
+.pv-brand i{ color:var(--pv-green-600); }
+.pv-nav .nav-link{ color:var(--pv-ink); font-weight:500; border-radius:8px; }
+.pv-nav .nav-link:hover,.pv-nav .nav-link.active{ background:var(--pv-green-50); color:var(--pv-green-800); text-decoration:none; }
+.pv-search .form-select,.pv-search .form-control{ border-color:var(--pv-line); font-size:.9rem; }
+.pv-search .form-select{ max-width:140px; background-color:var(--pv-green-50); }
+
+/* breadcrumb */
+.pv-crumbs{ font-size:.85rem; }
+.pv-crumbs .breadcrumb{ margin:0; }
+.pv-crumbs .breadcrumb-item+.breadcrumb-item::before{ color:#9bb0a3; }
+
+/* cards */
+.pv-card{ background:#fff; border:1px solid var(--pv-line); border-radius:var(--pv-radius); box-shadow:var(--pv-shadow); }
+.pv-card-head{ padding:14px 20px; border-bottom:1px solid var(--pv-line); display:flex; align-items:center; gap:10px; font-weight:600; color:var(--pv-green-900); }
+.pv-card-head i{ color:var(--pv-green-600); }
+.pv-card-body{ padding:20px; }
+
+/* plant hero */
+.pv-hero{ display:flex; gap:24px; padding:22px; flex-wrap:wrap; }
+.pv-hero-img{ width:220px; height:220px; object-fit:cover; border-radius:12px; border:1px solid var(--pv-line); background:var(--pv-green-50); }
+.pv-hero-main{ flex:1; min-width:260px; }
+.pv-hero h1{ font-size:1.9rem; margin:0 0 4px; color:var(--pv-green-900); }
+.pv-meta{ display:flex; flex-wrap:wrap; gap:8px 22px; margin:12px 0 0; color:var(--pv-muted); font-size:.95rem; }
+.pv-meta b{ color:var(--pv-ink); font-weight:600; }
+.pv-stats{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+.pv-stat{ background:var(--pv-green-50); border:1px solid var(--pv-line); border-radius:10px; padding:8px 14px; min-width:100px; }
+.pv-stat .n{ font-size:1.25rem; font-weight:700; color:var(--pv-green-800); line-height:1.1; }
+.pv-stat .l{ font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--pv-muted); }
+
+/* tier badges */
+.tier-badge{ display:inline-flex; align-items:center; gap:6px; font-weight:600; font-size:.8rem; padding:4px 12px; border-radius:999px; border:1px solid transparent; }
+.tier-A{ background:#e3f3ea; color:#14532d; border-color:#b7e0c6; }
+.tier-B{ background:#e0f2f1; color:#0f5f5a; border-color:#b2dfdb; }
+.tier-C{ background:#fff4db; color:#8a5a00; border-color:#f3d98b; }
+.tier-R{ background:#f3e8ff; color:#6b21a8; border-color:#dcc3f5; }
+.tier-none{ background:#eef1ef; color:#62766a; }
+
+/* tabs */
+.pv-tabs{ border-bottom:1px solid var(--pv-line); gap:4px; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; }
+.pv-tabs .nav-link{ color:var(--pv-muted); font-weight:500; border:0; border-bottom:3px solid transparent; border-radius:0; white-space:nowrap; padding:12px 16px; }
+.pv-tabs .nav-link:hover{ color:var(--pv-green-800); }
+.pv-tabs .nav-link.active{ color:var(--pv-green-800); border-bottom-color:var(--pv-green-600); background:none; }
+.pv-tabs .badge{ background:var(--pv-green-100)!important; color:var(--pv-green-800); font-weight:600; }
+
+/* key/value tables */
+.kv{ width:100%; margin:0; }
+.kv th{ width:34%; color:var(--pv-muted); font-weight:500; background:var(--pv-green-50); }
+.kv th,.kv td{ padding:11px 16px; border-color:var(--pv-line); }
+
+/* collapsible sections */
+.pv-collapse-btn{ width:100%; background:none; border:0; text-align:left; cursor:pointer; }
+.pv-collapse-btn .chev{ margin-left:auto; transition:transform .2s; color:var(--pv-muted); }
+.pv-collapse-btn[aria-expanded="false"] .chev{ transform:rotate(-90deg); }
+
+/* bioactivity */
+.bio-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; }
+.bio-card{ display:flex; align-items:center; gap:12px; padding:14px 16px; background:#fff; border:1px solid var(--pv-line); border-radius:12px; }
+.bio-card .ic{ width:38px; height:38px; border-radius:10px; background:var(--pv-green-100); color:var(--pv-green-700); display:grid; place-items:center; flex:none; }
+.bio-card a{ color:var(--pv-ink); font-weight:600; }
+
+/* ADMET */
+.admet-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+.admet-item{ border:1px solid var(--pv-line); border-radius:12px; padding:16px 18px; background:#fff; border-top:4px solid var(--pv-green-600); }
+.admet-item .k{ display:flex; align-items:center; gap:8px; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--pv-green-800); font-weight:700; margin-bottom:8px; }
+.admet-item.tox{ border-top-color:#d97706; } .admet-item.tox .k{ color:#9a5b00; }
+.admet-item .v{ white-space:pre-line; }
+.admet-item .na{ color:#9bb0a3; }
+
+/* citations */
+.citations{ padding-left:1.4rem; margin:0; }
+.citations li{ padding:10px 0; border-bottom:1px dashed var(--pv-line); line-height:1.6; }
+.citations li:last-child{ border-bottom:0; }
+.citations .ref-links a{ font-size:.82rem; margin-right:12px; }
+
+/* tables / DataTables */
+.pv table.dataTable thead th,.pv .table thead th{ background:var(--pv-green-50); color:var(--pv-green-900); font-weight:600; border-bottom:2px solid var(--pv-line); }
+.pv .dataTables_wrapper .dataTables_filter input,.pv .dataTables_wrapper .dataTables_length select{ border:1px solid var(--pv-line); border-radius:8px; padding:4px 10px; }
+.pv .page-item.active .page-link{ background:var(--pv-green-700); border-color:var(--pv-green-700); }
+.pv .page-link{ color:var(--pv-green-800); }
+.pv .dataTables_wrapper{ padding:0; }
+
+/* network graph */
+#networkGraph svg{ width:100%; height:auto; max-height:420px; }
+.network-center-label{ font-size:13px; font-weight:600; fill:#14432a; }
+.network-node-label{ font-size:11px; fill:#33443a; }
+.network-node:hover .network-node-label{ fill:#237a4b; font-weight:600; }
+
+/* buttons */
+.btn-pv{ background:var(--pv-green-700); color:#fff; border:0; } .btn-pv:hover{ background:var(--pv-green-800); color:#fff; }
+.btn-outline-pv{ border:1px solid var(--pv-green-700); color:var(--pv-green-800); background:#fff; } .btn-outline-pv:hover{ background:var(--pv-green-50); color:var(--pv-green-900); }
+.ext-links a{ display:inline-block; margin:0 6px 6px 0; padding:4px 12px; border:1px solid var(--pv-line); border-radius:999px; font-size:.82rem; color:var(--pv-green-800); background:#fff; }
+.ext-links a:hover{ background:var(--pv-green-50); text-decoration:none; }
+
+.pv-footer{ color:var(--pv-muted); font-size:.85rem; padding:28px 0; }
+.empty-state{ text-align:center; color:var(--pv-muted); padding:34px 10px; }
+.empty-state i{ font-size:1.8rem; color:#b9cdbf; display:block; margin-bottom:8px; }
+
+@media (max-width:576px){ .pv-hero-img{ width:100%; height:200px; } .pv-hero h1{ font-size:1.5rem; } }
