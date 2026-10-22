@@ -7,6 +7,9 @@ def get_all_plants():
 
     cursor = connection.cursor(dictionary=True)
 
+    # GROUP_CONCAT truncates at 1024 chars by default
+    cursor.execute("SET SESSION group_concat_max_len = 1000000")
+
     cursor.execute("""
 
         SELECT
@@ -16,41 +19,31 @@ def get_all_plants():
             p.scientific_name AS scientificName,
             p.family,
             p.category,
+            p.distribution,
+            p.occurrence_tier AS occurrenceTier,
             p.image_path,
 
-            GROUP_CONCAT(
-                DISTINCT pp.part_name
-                SEPARATOR ', '
-            ) AS part,
+            (SELECT GROUP_CONCAT(DISTINCT pp.part_name SEPARATOR ', ')
+               FROM plant_parts pp
+              WHERE pp.plant_id = p.plant_id) AS part,
 
-            GROUP_CONCAT(
-                DISTINCT ph.compound_name
-                SEPARATOR ', '
-            ) AS compound,
+            (SELECT GROUP_CONCAT(DISTINCT ph.compound_name SEPARATOR ', ')
+               FROM plant_phytochemicals ppc
+               JOIN phytochemicals ph
+                 ON ph.phytochemical_id = ppc.phytochemical_id
+              WHERE ppc.plant_id = p.plant_id) AS compound,
 
-            GROUP_CONCAT(
-                DISTINCT mu.disease_name
-                SEPARATOR ', '
-            ) AS medicinalUses
+            (SELECT GROUP_CONCAT(DISTINCT mu.disease_name SEPARATOR ', ')
+               FROM plant_uses pu
+               JOIN medicinal_uses mu
+                 ON mu.use_id = pu.use_id
+              WHERE pu.plant_id = p.plant_id) AS medicinalUses,
+
+            (SELECT GROUP_CONCAT(DISTINCT pb.activity_name SEPARATOR ', ')
+               FROM plant_bioactivities pb
+              WHERE pb.plant_id = p.plant_id) AS bioactivity
 
         FROM plants p
-
-        LEFT JOIN plant_parts pp
-            ON pp.plant_id = p.plant_id
-
-        LEFT JOIN plant_phytochemicals ppc
-            ON ppc.plant_id = p.plant_id
-
-        LEFT JOIN phytochemicals ph
-            ON ph.phytochemical_id = ppc.phytochemical_id
-
-        LEFT JOIN plant_uses pu
-            ON pu.plant_id = p.plant_id
-
-        LEFT JOIN medicinal_uses mu
-            ON mu.use_id = pu.use_id
-
-        GROUP BY p.plant_id
 
         ORDER BY p.plant_id
 
@@ -102,6 +95,7 @@ def get_plant_by_id(plant_id):
         SELECT
             ph.phytochemical_id,
             ph.compound_name,
+            ph.compound_class,
             ph.molecular_formula,
             ph.pubchem_cid,
             pcp.plant_part,
@@ -119,7 +113,7 @@ def get_plant_by_id(plant_id):
 
     cursor.execute(
         """
-        SELECT mu.disease_name, pu.evidence_level, pu.notes
+        SELECT mu.disease_name, pu.plant_part, pu.preparation, pu.evidence_level, pu.notes
         FROM plant_uses pu
         JOIN medicinal_uses mu
             ON mu.use_id = pu.use_id
@@ -141,6 +135,36 @@ def get_plant_by_id(plant_id):
     )
 
     plant["gallery"] = cursor.fetchall()
+
+    cursor.execute(
+        "SELECT activity_name FROM plant_bioactivities "
+        "WHERE plant_id=%s ORDER BY activity_name",
+        (plant_id,)
+    )
+
+    plant["bioactivities"] = [r["activity_name"] for r in cursor.fetchall()]
+
+    cursor.execute(
+        "SELECT absorption, distribution, metabolism, excretion, toxicity "
+        "FROM plant_admet WHERE plant_id=%s",
+        (plant_id,)
+    )
+
+    plant["admet"] = cursor.fetchone()
+
+    cursor.execute(
+        """
+        SELECT rp.paper_id, rp.authors, rp.title, rp.journal,
+               rp.publication_year AS year, rp.doi, rp.paper_url AS url
+        FROM paper_plants pp
+        JOIN research_papers rp ON rp.paper_id = pp.paper_id
+        WHERE pp.plant_id=%s
+        ORDER BY rp.publication_year DESC, rp.title
+        """,
+        (plant_id,)
+    )
+
+    plant["references"] = cursor.fetchall()
 
     cursor.close()
 
