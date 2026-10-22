@@ -9,6 +9,17 @@ const familySelect = document.getElementById("family");
 const sortSelect = document.getElementById("sort");
 const filterBtn = document.getElementById("filterBtn");
 const resetBtn = document.getElementById("resetBtn");
+const searchField = document.getElementById("searchField");
+
+function esc(value) {
+
+    const d = document.createElement("div");
+
+    d.textContent = value == null ? "" : String(value);
+
+    return d.innerHTML;
+
+}
 
 async function loadPlants() {
 
@@ -25,6 +36,8 @@ async function loadPlants() {
     const params = new URLSearchParams();
 
     params.set("q", keyword);
+
+    if (searchField && searchField.value !== "all") params.set("field", searchField.value);
 
     if (category) params.set("category", category);
     if (family) params.set("family", family);
@@ -63,17 +76,17 @@ async function loadPlants() {
 
             <td>${plant.id}</td>
 
-            <td>${plant.commonName}</td>
+            <td>${esc(plant.commonName)}</td>
 
-            <td><i>${plant.scientificName}</i></td>
+            <td><i>${esc(plant.scientificName)}</i></td>
 
-            <td>${plant.family}</td>
+            <td>${esc(plant.family)}</td>
 
-            <td>${plant.part || "-"}</td>
+            <td>${esc(plant.part) || "-"}</td>
 
-            <td>${plant.compound || "-"}</td>
+            <td>${esc(plant.compound) || "-"}</td>
 
-            <td>${plant.medicinalUses || "-"}</td>
+            <td>${esc(plant.medicinalUses) || "-"}</td>
 
             <td>
 
@@ -110,6 +123,7 @@ function resetFilters() {
     if (categorySelect) categorySelect.value = "";
     if (familySelect) familySelect.value = "";
     if (sortSelect) sortSelect.selectedIndex = 0;
+    if (searchField) searchField.value = "all";
 
     loadPlants();
 
@@ -147,6 +161,14 @@ if (filterBtn) {
     );
 }
 
+if (searchField) {
+
+    searchField.addEventListener(
+        "change",
+        performSearch
+    );
+}
+
 if (resetBtn) {
 
     resetBtn.addEventListener(
@@ -156,6 +178,17 @@ if (resetBtn) {
 }
 
 window.onload = function () {
+
+    // honour ?search=...&field=... (navbar search, profile-page links)
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get("search") && searchPlant) {
+        searchPlant.value = urlParams.get("search");
+    }
+
+    if (urlParams.get("field") && searchField) {
+        searchField.value = urlParams.get("field");
+    }
 
     loadPlants();
 
